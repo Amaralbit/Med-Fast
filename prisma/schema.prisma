@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum MediaType {
+  PROFILE_PHOTO
+  OFFICE_PHOTO
+  VIDEO
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+// ─────────────────────────────────────────
+// USUÁRIO BASE
+// ─────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  doctorProfile  DoctorProfile?
+  patientProfile PatientProfile?
+  notifications  Notification[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// PERFIL DO PACIENTE
+// ─────────────────────────────────────────
+
+model PatientProfile {
+  id        String    @id @default(cuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthDate DateTime?
+  cpf       String?   @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  appointments Appointment[]
+
+  @@map("patient_profiles")
+}
+
+// ─────────────────────────────────────────
+// PERFIL DO MÉDICO (CMS + CONFIGURAÇÕES)
+// ─────────────────────────────────────────
+
+model DoctorProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  crm       String? @unique
+  specialty String?
+  bio       String? @db.Text
+
+  whatsapp String?
+
+  consultationDurationMinutes Int     @default(30)
+  pricePrivate                Decimal? @db.Decimal(10, 2)
+
+  colorPrimary String @default("#3B82F6")
+  colorAccent  String @default("#06B6D4")
+
+  addressStreet String?
+  addressCity   String?
+  addressState  String?
+  addressZip    String?
+
+  slug        String  @unique
+  isPublished Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media          DoctorMedia[]
+  healthPlans    DoctorHealthPlan[]
+  availabilities WeeklyAvailability[]
+  blockedSlots   BlockedSlot[]
+  appointments   Appointment[]
+  chatQuestions  ChatQuestion[]
+
+  @@map("doctor_profiles")
+}
+
+// ─────────────────────────────────────────
+// MÍDIA DO MÉDICO
+// ─────────────────────────────────────────
+
+model DoctorMedia {
+  id              String        @id @default(cuid())
+  doctorProfileId String
+  doctorProfile   DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
+
+  type    MediaType
+  url     String
+  caption String?
+  order   Int      @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@map("doctor_media")
+}
+
+// ─────────────────────────────────────────
+// CONVÊNIOS
+// ─────────────────────────────────────────
+
+model HealthPlan {
+  id   String @id @default(cuid())
+  name String @unique
+
+  doctors DoctorHealthPlan[]
+
+  @@map("health_plans")
+}
+
+model DoctorHealthPlan {
+  doctorProfileId String
+  healthPlanId    String
+
+  doctorProfile DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
+  healthPlan    HealthPlan    @relation(fields: [healthPlanId], references: [id], onDelete: Cascade)
+
+  @@id([doctorProfileId, healthPlanId])
+  @@map("doctor_health_plans")
+}
+
+// ─────────────────────────────────────────
+// DISPONIBILIDADE SEMANAL RECORRENTE
+// ─────────────────────────────────────────
+
+model WeeklyAvailability {
+  id              String        @id @default(cuid())
+  doctorProfileId String
+  doctorProfile   DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
+
+  dayOfWeek DayOfWeek
+  startTime String
+  endTime   String
+
+  @@map("weekly_availabilities")
+}
+
+// ─────────────────────────────────────────
+// BLOQUEIOS MANUAIS
+// ─────────────────────────────────────────
+
+model BlockedSlot {
+  id              String        @id @default(cuid())
+  doctorProfileId String
+  doctorProfile   DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
+
+  startAt   DateTime
+  endAt     DateTime
+  reason    String?
+
+  createdAt DateTime @default(now())
+
+  @@map("blocked_slots")
+}
+
+// ─────────────────────────────────────────
+// AGENDAMENTOS
+// ─────────────────────────────────────────
+
+model Appointment {
+  id              String            @id @default(cuid())
+  doctorProfileId String
+  doctorProfile   DoctorProfile     @relation(fields: [doctorProfileId], references: [id])
+  patientProfileId String
+  patientProfile  PatientProfile    @relation(fields: [patientProfileId], references: [id])
+
+  startAt         DateTime
+  endAt           DateTime
+  status          AppointmentStatus @default(PENDING)
+
+  notes           String?  @db.Text
+  healthPlanUsed  String?
+  isFirstConsult  Boolean  @default(false)
+
+  cancelledReason String?
+  cancelledAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("appointments")
+}
+
+// ─────────────────────────────────────────
+// CHAT FAQ
+// ─────────────────────────────────────────
+
+model ChatQuestion {
+  id              String        @id @default(cuid())
+  doctorProfileId String
+  doctorProfile   DoctorProfile @relation(fields: [doctorProfileId], references: [id], onDelete: Cascade)
+
+  question String
+  answer   String @db.Text
+  order    Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@map("chat_questions")
+}
+
+// ─────────────────────────────────────────
+// NOTIFICAÇÕES
+// ─────────────────────────────────────────
+
+model Notification {
+  id       String  @id @default(cuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type     String
+  title    String
+  body     String
+  isRead   Boolean @default(false)
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}

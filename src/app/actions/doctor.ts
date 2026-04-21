@@ -1,0 +1,271 @@
+"use server"
+
+import { z } from "zod"
+import { prisma } from "@/server/db"
+import { auth } from "@/auth"
+import { revalidatePath } from "next/cache"
+
+const profileSchema = z.object({
+  specialty: z.string().min(2, "Informe a especialidade"),
+  crm: z.string().optional(),
+  bio: z.string().optional(),
+  whatsapp: z.string().optional(),
+  consultationDurationMinutes: z.coerce.number().min(15).max(240),
+  pricePrivate: z.coerce.number().min(0).optional(),
+  colorPrimary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  colorAccent: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  addressStreet: z.string().optional(),
+  addressCity: z.string().optional(),
+  addressState: z.string().optional(),
+  addressZip: z.string().optional(),
+  isPublished: z.coerce.boolean().optional(),
+})
+
+export type ProfileState = { error?: string; success?: boolean }
+
+export async function saveProfile(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const raw = Object.fromEntries(formData.entries())
+  const parsed = profileSchema.safeParse(raw)
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const { pricePrivate, ...rest } = parsed.data
+
+  await prisma.doctorProfile.update({
+    where: { userId: session.user.id },
+    data: {
+      ...rest,
+      pricePrivate: pricePrivate ?? null,
+    },
+  })
+
+  revalidatePath("/dashboard/doctor/perfil")
+  revalidatePath("/dashboard/doctor")
+  return { success: true }
+}
+
+// ─── Disponibilidade ───────────────────────────────────────────────────────
+
+const availabilitySchema = z.object({
+  dayOfWeek: z.enum(["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/),
+})
+
+export async function addAvailability(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const parsed = availabilitySchema.safeParse(Object.fromEntries(formData.entries()))
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return { error: "Perfil não encontrado" }
+
+  await prisma.weeklyAvailability.create({
+    data: { doctorProfileId: profile.id, ...parsed.data },
+  })
+
+  revalidatePath("/dashboard/doctor/disponibilidade")
+  return { success: true }
+}
+
+export async function removeAvailability(id: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return
+
+  await prisma.weeklyAvailability.deleteMany({
+    where: { id, doctorProfileId: profile.id },
+  })
+
+  revalidatePath("/dashboard/doctor/disponibilidade")
+}
+
+// ─── Convênios ────────────────────────────────────────────────────────────────
+
+export async function addHealthPlan(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const name = formData.get("name")?.toString().trim()
+  if (!name || name.length < 2) return { error: "Informe o nome do convênio" }
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return { error: "Perfil não encontrado" }
+
+  const plan = await prisma.healthPlan.upsert({
+    where: { name },
+    create: { name },
+    update: {},
+  })
+
+  const existing = await prisma.doctorHealthPlan.findUnique({
+    where: { doctorProfileId_healthPlanId: { doctorProfileId: profile.id, healthPlanId: plan.id } },
+  })
+  if (existing) return { error: "Convênio já cadastrado" }
+
+  await prisma.doctorHealthPlan.create({
+    data: { doctorProfileId: profile.id, healthPlanId: plan.id },
+  })
+
+  revalidatePath("/dashboard/doctor/convenios")
+  return { success: true }
+}
+
+export async function removeHealthPlan(healthPlanId: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return
+
+  await prisma.doctorHealthPlan.deleteMany({
+    where: { doctorProfileId: profile.id, healthPlanId },
+  })
+
+  revalidatePath("/dashboard/doctor/convenios")
+}
+
+// ─── Agendamentos ─────────────────────────────────────────────────────────────
+
+import {
+  sendAppointmentConfirmedToPatient,
+  sendAppointmentCancelledToPatient,
+} from "@/lib/email"
+
+async function getOwnProfile(userId: string) {
+  return prisma.doctorProfile.findUnique({
+    where: { userId },
+    include: { user: { select: { name: true, email: true } } },
+  })
+}
+
+export async function confirmAppointment(appointmentId: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await getOwnProfile(session.user.id)
+  if (!profile) return
+
+  const appt = await prisma.appointment.findFirst({
+    where: { id: appointmentId, doctorProfileId: profile.id, status: "PENDING" },
+    include: { patientProfile: { include: { user: { select: { name: true, email: true } } } } },
+  })
+  if (!appt) return
+
+  await prisma.appointment.update({
+    where: { id: appointmentId },
+    data: { status: "CONFIRMED" },
+  })
+
+  revalidatePath("/dashboard/doctor/agendamentos")
+
+  sendAppointmentConfirmedToPatient({
+    patientEmail: appt.patientProfile.user.email,
+    patientName: appt.patientProfile.user.name,
+    doctorName: profile.user.name,
+    doctorSpecialty: profile.specialty,
+    doctorSlug: profile.slug,
+    startAt: appt.startAt,
+    endAt: appt.endAt,
+  }).catch(() => {})
+}
+
+export async function cancelAppointment(appointmentId: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await getOwnProfile(session.user.id)
+  if (!profile) return
+
+  const appt = await prisma.appointment.findFirst({
+    where: {
+      id: appointmentId,
+      doctorProfileId: profile.id,
+      status: { in: ["PENDING", "CONFIRMED"] },
+    },
+    include: { patientProfile: { include: { user: { select: { name: true, email: true } } } } },
+  })
+  if (!appt) return
+
+  await prisma.appointment.update({
+    where: { id: appointmentId },
+    data: { status: "CANCELLED", cancelledAt: new Date() },
+  })
+
+  revalidatePath("/dashboard/doctor/agendamentos")
+
+  sendAppointmentCancelledToPatient({
+    patientEmail: appt.patientProfile.user.email,
+    patientName: appt.patientProfile.user.name,
+    doctorName: profile.user.name,
+    startAt: appt.startAt,
+  }).catch(() => {})
+}
+
+export async function completeAppointment(appointmentId: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await getOwnProfile(session.user.id)
+  if (!profile) return
+
+  await prisma.appointment.updateMany({
+    where: { id: appointmentId, doctorProfileId: profile.id, status: "CONFIRMED" },
+    data: { status: "COMPLETED" },
+  })
+
+  revalidatePath("/dashboard/doctor/agendamentos")
+}
+
+// ─── Chat FAQ ─────────────────────────────────────────────────────────────────
+
+export async function addChatQuestion(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const question = formData.get("question")?.toString().trim()
+  const answer = formData.get("answer")?.toString().trim()
+  if (!question || question.length < 3) return { error: "Informe a pergunta" }
+  if (!answer || answer.length < 3) return { error: "Informe a resposta" }
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return { error: "Perfil não encontrado" }
+
+  const lastQuestion = await prisma.chatQuestion.findFirst({
+    where: { doctorProfileId: profile.id },
+    orderBy: { order: "desc" },
+    select: { order: true },
+  })
+
+  await prisma.chatQuestion.create({
+    data: {
+      doctorProfileId: profile.id,
+      question,
+      answer,
+      order: (lastQuestion?.order ?? -1) + 1,
+    },
+  })
+
+  revalidatePath("/dashboard/doctor/chat-faq")
+  return { success: true }
+}
+
+export async function removeChatQuestion(id: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return
+
+  await prisma.chatQuestion.deleteMany({
+    where: { id, doctorProfileId: profile.id },
+  })
+
+  revalidatePath("/dashboard/doctor/chat-faq")
+}
