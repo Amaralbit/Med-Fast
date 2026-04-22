@@ -1,8 +1,8 @@
 "use client"
 
 import { useActionState } from "react"
+import type { WeeklyAvailability } from "@prisma/client"
 import { addAvailability, removeAvailability } from "@/app/actions/doctor"
-import type { WeeklyAvailabilityModel as WeeklyAvailability } from "@/generated/prisma/models/WeeklyAvailability"
 import { Trash2 } from "lucide-react"
 
 const DAY_LABELS: Record<string, string> = {

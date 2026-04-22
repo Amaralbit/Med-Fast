@@ -2,9 +2,9 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { z } from "zod"
 import bcrypt from "bcryptjs"
+import type { Role } from "@prisma/client"
 import { prisma } from "@/server/db"
 import { authConfig } from "@/auth.config"
-import type { Role } from "@/generated/prisma/enums"
 
 declare module "next-auth" {
   interface Session {

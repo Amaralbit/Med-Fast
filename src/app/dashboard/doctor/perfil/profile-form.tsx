@@ -1,12 +1,12 @@
 "use client"
 
 import { useActionState } from "react"
+import type { DoctorProfile } from "@prisma/client"
 import { saveProfile } from "@/app/actions/doctor"
-import type { DoctorProfileModel } from "@/generated/prisma/models/DoctorProfile"
 
 const DURATIONS = [15, 20, 30, 45, 60, 90, 120]
 
-export function ProfileForm({ profile }: { profile: DoctorProfileModel }) {
+export function ProfileForm({ profile }: { profile: DoctorProfile }) {
   const [state, action, pending] = useActionState(saveProfile, {})
 
   return (

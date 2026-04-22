@@ -2,11 +2,11 @@
 
 import { z } from "zod"
 import bcrypt from "bcryptjs"
+import type { Role } from "@prisma/client"
 import { prisma } from "@/server/db"
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
-import type { Role } from "@/generated/prisma/enums"
 
 const registerSchema = z.object({
   name: z.string().min(2, "Nome muito curto"),
