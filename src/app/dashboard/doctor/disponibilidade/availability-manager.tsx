@@ -1,7 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
-import type { WeeklyAvailability } from "@prisma/client"
+import type { WeeklyAvailability } from "@/generated/prisma/client"
 import { addAvailability, removeAvailability } from "@/app/actions/doctor"
 import { Trash2 } from "lucide-react"
 

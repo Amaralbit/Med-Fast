@@ -1,7 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
-import type { DoctorProfile } from "@prisma/client"
+import type { DoctorProfile } from "@/generated/prisma/client"
 import { saveProfile } from "@/app/actions/doctor"
 
 const DURATIONS = [15, 20, 30, 45, 60, 90, 120]
