@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import type { ProfileState } from "@/app/actions/doctor"
 import { addChatQuestion, removeChatQuestion } from "@/app/actions/doctor"
 import { Trash2, Plus, MessageCircle, Phone } from "lucide-react"
 
@@ -11,7 +12,7 @@ type Props = {
   whatsapp: string | null
 }
 
-const initialState = {}
+const initialState: ProfileState = {}
 
 export function FaqManager({ questions, whatsapp }: Props) {
   const [state, formAction, pending] = useActionState(addChatQuestion, initialState)
