@@ -18,21 +18,19 @@ const registerSchema = z.object({
 export type AuthState = { error?: string; success?: boolean }
 
 export async function register(_: AuthState, formData: FormData): Promise<AuthState> {
+  const raw = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+    role: formData.get("role"),
+  }
+
+  const parsed = registerSchema.safeParse(raw)
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
+  const { name, email, password, role } = parsed.data
+
   try {
-    const raw = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      role: formData.get("role"),
-    }
-
-    const parsed = registerSchema.safeParse(raw)
-    if (!parsed.success) {
-      return { error: parsed.error.issues[0].message }
-    }
-
-    const { name, email, password, role } = parsed.data
-
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) return { error: "E-mail já cadastrado" }
 
@@ -60,26 +58,19 @@ export async function register(_: AuthState, formData: FormData): Promise<AuthSt
             }),
       },
     })
-
-    try {
-      const redirectTo = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        redirectTo: role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient",
-      })
-
-      redirect(redirectTo)
-    } catch (error) {
-      if (error instanceof AuthError) {
-        return { error: "Conta criada, mas não foi possível entrar automaticamente. Tente fazer login." }
-      }
-      throw error
-    }
   } catch (error) {
     console.error("register action failed", error)
     return { error: "Não foi possível criar a conta agora. Tente novamente." }
   }
+
+  // Fora do try/catch para que o NEXT_REDIRECT do signIn propague corretamente
+  await signIn("credentials", {
+    email,
+    password,
+    redirectTo: role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient",
+  })
+
+  return { success: true }
 }
 
 export async function login(_: AuthState, formData: FormData): Promise<AuthState> {
