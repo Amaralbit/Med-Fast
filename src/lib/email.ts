@@ -1,8 +1,16 @@
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.EMAIL_FROM ?? "MedFast <onboarding@resend.dev>"
 const BASE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured")
+  }
+
+  return new Resend(apiKey)
+}
 
 function formatDate(date: Date) {
   return date.toLocaleDateString("pt-BR", {
@@ -78,7 +86,7 @@ export async function sendNewAppointmentToDoctor(params: {
     ${ctaButton("Ver agendamentos", `${BASE_URL}/dashboard/doctor/agendamentos`)}
   `
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: doctorEmail,
     subject: `Nova consulta — ${patientName} em ${formatDate(startAt)}`,
@@ -112,7 +120,7 @@ export async function sendAppointmentConfirmedToPatient(params: {
     ${ctaButton("Ver minhas consultas", `${BASE_URL}/dashboard/patient/consultas`)}
   `
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: patientEmail,
     subject: `Consulta confirmada — ${formatDate(startAt)} com ${doctorName}`,
@@ -141,7 +149,7 @@ export async function sendAppointmentCancelledToPatient(params: {
     ${ctaButton("Buscar médicos", `${BASE_URL}/dashboard/patient`)}
   `
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: patientEmail,
     subject: `Consulta cancelada — ${formatDate(startAt)}`,
@@ -170,7 +178,7 @@ export async function sendAppointmentCancelledToDoctor(params: {
     ${ctaButton("Ver agendamentos", `${BASE_URL}/dashboard/doctor/agendamentos`)}
   `
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: doctorEmail,
     subject: `Consulta cancelada — ${patientName} em ${formatDate(startAt)}`,

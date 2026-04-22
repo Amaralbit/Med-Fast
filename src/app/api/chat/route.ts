@@ -4,7 +4,17 @@ import Anthropic from "@anthropic-ai/sdk"
 import { getAvailableSlots } from "@/lib/slots"
 import { sendNewAppointmentToDoctor } from "@/lib/email"
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+
+function getAnthropic() {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    throw new Error("ANTHROPIC_API_KEY is not configured")
+  }
+
+  return new Anthropic({ apiKey })
+}
 
 const TOOLS: Anthropic.Tool[] = [
   {
@@ -33,6 +43,7 @@ const TOOLS: Anthropic.Tool[] = [
 ]
 
 export async function POST(req: Request) {
+  const anthropic = getAnthropic()
   const { messages, doctorSlug } = await req.json() as {
     messages: Anthropic.MessageParam[]
     doctorSlug: string
