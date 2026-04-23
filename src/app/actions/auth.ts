@@ -63,14 +63,8 @@ export async function register(_: AuthState, formData: FormData): Promise<AuthSt
     return { error: "Não foi possível criar a conta agora. Tente novamente." }
   }
 
-  // Fora do try/catch para que o NEXT_REDIRECT do signIn propague corretamente
-  await signIn("credentials", {
-    email,
-    password,
-    redirectTo: role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient",
-  })
-
-  return { success: true }
+  await signIn("credentials", { email, password, redirect: false })
+  redirect(role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient")
 }
 
 export async function login(_: AuthState, formData: FormData): Promise<AuthState> {

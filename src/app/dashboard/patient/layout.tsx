@@ -37,7 +37,7 @@ export default async function PatientLayout({ children }: { children: React.Reac
             <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
               {session.user.name}
             </span>
-            <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }) }}>
+            <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/login") }}>
               <button
                 type="submit"
                 className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"

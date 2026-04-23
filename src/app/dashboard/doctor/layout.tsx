@@ -1,6 +1,5 @@
-import { auth } from "@/auth"
+import { auth, signOut } from "@/auth"
 import { redirect } from "next/navigation"
-import { signOut } from "@/auth"
 import Link from "next/link"
 import { LayoutDashboard, User, Calendar, HeartPulse, LogOut, ClipboardList, CalendarDays, MessageCircle } from "lucide-react"
 
@@ -46,7 +45,8 @@ export default async function DoctorLayout({ children }: { children: React.React
           <form
             action={async () => {
               "use server"
-              await signOut({ redirectTo: "/login" })
+              await signOut({ redirect: false })
+              redirect("/login")
             }}
           >
             <button
