@@ -74,9 +74,11 @@ export async function register(_: AuthState, formData: FormData): Promise<AuthSt
 }
 
 export async function login(_: AuthState, formData: FormData): Promise<AuthState> {
+  const email = formData.get("email")?.toString()
+
   try {
     await signIn("credentials", {
-      email: formData.get("email"),
+      email,
       password: formData.get("password"),
       redirect: false,
     })
@@ -86,5 +88,7 @@ export async function login(_: AuthState, formData: FormData): Promise<AuthState
     }
     throw error
   }
-  redirect("/dashboard/patient")
+
+  const user = email ? await prisma.user.findUnique({ where: { email }, select: { role: true } }) : null
+  redirect(user?.role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient")
 }
