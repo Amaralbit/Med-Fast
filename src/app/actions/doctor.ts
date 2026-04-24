@@ -223,6 +223,50 @@ export async function completeAppointment(appointmentId: string): Promise<void> 
   revalidatePath("/dashboard/doctor/agendamentos")
 }
 
+// ─── Bloqueios manuais ────────────────────────────────────────────────────────
+
+export async function addBlockedSlot(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const startDate = formData.get("startDate")?.toString()
+  const startTime = formData.get("startTime")?.toString()
+  const endDate = formData.get("endDate")?.toString()
+  const endTime = formData.get("endTime")?.toString()
+  const reason = formData.get("reason")?.toString().trim() || null
+
+  if (!startDate || !startTime || !endDate || !endTime)
+    return { error: "Preencha data e horário de início e fim" }
+
+  const startAt = new Date(`${startDate}T${startTime}:00-03:00`)
+  const endAt = new Date(`${endDate}T${endTime}:00-03:00`)
+
+  if (isNaN(startAt.getTime()) || isNaN(endAt.getTime()))
+    return { error: "Data ou horário inválidos" }
+  if (endAt <= startAt) return { error: "O fim deve ser depois do início" }
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return { error: "Perfil não encontrado" }
+
+  await prisma.blockedSlot.create({
+    data: { doctorProfileId: profile.id, startAt, endAt, reason },
+  })
+
+  revalidatePath("/dashboard/doctor/disponibilidade")
+  return { success: true }
+}
+
+export async function removeBlockedSlot(id: string): Promise<void> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return
+
+  await prisma.blockedSlot.deleteMany({ where: { id, doctorProfileId: profile.id } })
+  revalidatePath("/dashboard/doctor/disponibilidade")
+}
+
 // ─── Chat FAQ ─────────────────────────────────────────────────────────────────
 
 export async function addChatQuestion(_: ProfileState, formData: FormData): Promise<ProfileState> {

@@ -1,10 +1,19 @@
 import { prisma } from "@/server/db"
 import Link from "next/link"
 import { MapPin, Clock, CreditCard } from "lucide-react"
+import { FilterBar } from "./filter-bar"
 
-export default async function PatientDashboard() {
+type Props = { searchParams: Promise<{ specialty?: string; city?: string }> }
+
+export default async function PatientDashboard({ searchParams }: Props) {
+  const { specialty, city } = await searchParams
+
   const doctors = await prisma.doctorProfile.findMany({
-    where: { isPublished: true },
+    where: {
+      isPublished: true,
+      ...(specialty ? { specialty: { contains: specialty, mode: "insensitive" } } : {}),
+      ...(city ? { addressCity: { contains: city, mode: "insensitive" } } : {}),
+    },
     include: {
       user: { select: { name: true } },
       healthPlans: { include: { healthPlan: true } },
@@ -17,14 +26,18 @@ export default async function PatientDashboard() {
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">Encontre um médico</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Clique em um médico para ver o perfil e agendar pelo chat
+          Filtre por especialidade ou cidade e agende sua consulta
         </p>
       </div>
+
+      <FilterBar />
 
       {doctors.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-200 dark:border-zinc-800 p-16 text-center">
           <p className="text-gray-400 dark:text-gray-600 text-sm">
-            Nenhum médico disponível no momento
+            {specialty || city
+              ? "Nenhum médico encontrado com esses filtros"
+              : "Nenhum médico disponível no momento"}
           </p>
         </div>
       ) : (
