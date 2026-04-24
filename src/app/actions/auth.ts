@@ -2,22 +2,38 @@
 
 import { z } from "zod"
 import bcrypt from "bcryptjs"
+import { headers } from "next/headers"
 import type { Role } from "@/generated/prisma/client"
 import { prisma } from "@/server/db"
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 const registerSchema = z.object({
-  name: z.string().min(2, "Nome muito curto"),
-  email: z.email("E-mail inválido"),
-  password: z.string().min(6, "Mínimo 6 caracteres"),
+  name: z.string().min(2, "Nome muito curto").max(100, "Nome muito longo"),
+  email: z.email("E-mail inválido").max(254, "E-mail inválido"),
+  // bcrypt silently truncates at 72 bytes — cap it there
+  password: z.string().min(6, "Mínimo 6 caracteres").max(72, "Senha muito longa"),
   role: z.enum(["DOCTOR", "PATIENT"]),
 })
 
 export type AuthState = { error?: string; success?: boolean }
 
+async function getClientIp(): Promise<string> {
+  const h = await headers()
+  return h.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1"
+}
+
 export async function register(_: AuthState, formData: FormData): Promise<AuthState> {
+  const ip = await getClientIp()
+
+  // 5 registration attempts per 15 minutes per IP
+  const rl = checkRateLimit(`register:${ip}`, 5, 15 * 60 * 1000)
+  if (!rl.allowed) {
+    return { error: "Muitas tentativas de cadastro. Aguarde 15 minutos e tente novamente." }
+  }
+
   const raw = {
     name: formData.get("name"),
     email: formData.get("email"),
@@ -68,6 +84,14 @@ export async function register(_: AuthState, formData: FormData): Promise<AuthSt
 }
 
 export async function login(_: AuthState, formData: FormData): Promise<AuthState> {
+  const ip = await getClientIp()
+
+  // 10 login attempts per 15 minutes per IP — brute-force protection
+  const rl = checkRateLimit(`login:${ip}`, 10, 15 * 60 * 1000)
+  if (!rl.allowed) {
+    return { error: "Muitas tentativas de login. Aguarde 15 minutos e tente novamente." }
+  }
+
   const email = formData.get("email")?.toString()
 
   try {

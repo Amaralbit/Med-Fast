@@ -7,18 +7,18 @@ import { revalidatePath } from "next/cache"
 import { put, del } from "@vercel/blob"
 
 const profileSchema = z.object({
-  specialty: z.string().min(2, "Informe a especialidade"),
-  crm: z.string().optional(),
-  bio: z.string().optional(),
-  whatsapp: z.string().optional(),
+  specialty: z.string().min(2, "Informe a especialidade").max(100, "Especialidade muito longa"),
+  crm: z.string().max(20, "CRM inválido").optional(),
+  bio: z.string().max(2000, "Bio muito longa (máx. 2000 caracteres)").optional(),
+  whatsapp: z.string().max(20, "WhatsApp inválido").optional(),
   consultationDurationMinutes: z.coerce.number().min(15).max(240),
-  pricePrivate: z.coerce.number().min(0).optional(),
+  pricePrivate: z.coerce.number().min(0).max(99999).optional(),
   colorPrimary: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   colorAccent: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  addressStreet: z.string().optional(),
-  addressCity: z.string().optional(),
-  addressState: z.string().optional(),
-  addressZip: z.string().optional(),
+  addressStreet: z.string().max(200).optional(),
+  addressCity: z.string().max(100).optional(),
+  addressState: z.string().max(2).optional(),
+  addressZip: z.string().max(10).optional(),
   isPublished: z.coerce.boolean().optional(),
 })
 
@@ -95,6 +95,7 @@ export async function addHealthPlan(_: ProfileState, formData: FormData): Promis
 
   const name = formData.get("name")?.toString().trim()
   if (!name || name.length < 2) return { error: "Informe o nome do convênio" }
+  if (name.length > 100) return { error: "Nome do convênio muito longo (máx. 100 caracteres)" }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return { error: "Perfil não encontrado" }
@@ -234,7 +235,7 @@ export async function addBlockedSlot(_: ProfileState, formData: FormData): Promi
   const startTime = formData.get("startTime")?.toString()
   const endDate = formData.get("endDate")?.toString()
   const endTime = formData.get("endTime")?.toString()
-  const reason = formData.get("reason")?.toString().trim() || null
+  const reason = formData.get("reason")?.toString().trim().slice(0, 200) || null
 
   if (!startDate || !startTime || !endDate || !endTime)
     return { error: "Preencha data e horário de início e fim" }
@@ -277,7 +278,9 @@ export async function addChatQuestion(_: ProfileState, formData: FormData): Prom
   const question = formData.get("question")?.toString().trim()
   const answer = formData.get("answer")?.toString().trim()
   if (!question || question.length < 3) return { error: "Informe a pergunta" }
+  if (question.length > 500) return { error: "Pergunta muito longa (máx. 500 caracteres)" }
   if (!answer || answer.length < 3) return { error: "Informe a resposta" }
+  if (answer.length > 2000) return { error: "Resposta muito longa (máx. 2000 caracteres)" }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return { error: "Perfil não encontrado" }
@@ -334,7 +337,13 @@ export async function uploadProfilePhoto(_: ProfileState, formData: FormData): P
     try { await del(profile.profilePhotoUrl) } catch { /* já removida */ }
   }
 
-  const ext = file.name.split(".").pop() ?? "jpg"
+  // Derive extension from MIME type to prevent extension spoofing
+  const mimeToExt: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  }
+  const ext = mimeToExt[file.type] ?? "jpg"
   const blob = await put(`medfast/profiles/${profile.id}/photo-${Date.now()}.${ext}`, file, { access: "public" })
 
   await prisma.doctorProfile.update({

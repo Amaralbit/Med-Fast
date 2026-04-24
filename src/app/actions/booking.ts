@@ -3,10 +3,13 @@
 import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { revalidatePath } from "next/cache"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 export type SlotTime = { startAt: string; endAt: string; label: string }
 
 const DAY_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+
+const NOTES_MAX_LENGTH = 2000
 
 function parseTime(timeStr: string): number {
   const [h, m] = timeStr.split(":").map(Number)
@@ -99,30 +102,51 @@ export async function bookAppointment(
   })
   if (!patientProfile) return { error: "Perfil de paciente não encontrado" }
 
+  // 10 bookings per hour per patient — prevents booking-spam
+  const rl = checkRateLimit(`book:${patientProfile.id}`, 10, 60 * 60 * 1000)
+  if (!rl.allowed) return { error: "Muitas solicitações. Aguarde um momento." }
+
+  // Validate and sanitize notes
+  const sanitizedNotes = notes?.trim().slice(0, NOTES_MAX_LENGTH) || null
+
   const slotStart = new Date(startAt)
   const slotEnd = new Date(endAt)
 
-  // Guard against double-booking
-  const conflict = await prisma.appointment.findFirst({
-    where: {
-      doctorProfileId,
-      status: { in: ["PENDING", "CONFIRMED"] },
-      startAt: { lt: slotEnd },
-      endAt: { gt: slotStart },
-    },
-  })
-  if (conflict) return { error: "Este horário não está mais disponível. Escolha outro." }
+  if (isNaN(slotStart.getTime()) || isNaN(slotEnd.getTime())) {
+    return { error: "Horário inválido" }
+  }
 
-  await prisma.appointment.create({
-    data: {
-      doctorProfileId,
-      patientProfileId: patientProfile.id,
-      startAt: slotStart,
-      endAt: slotEnd,
-      status: "PENDING",
-      notes: notes?.trim() || null,
-    },
-  })
+  // Wrap conflict check + create in a transaction to minimize the race-condition window.
+  // For zero-race-condition guarantee, add a DB UNIQUE constraint on (doctorProfileId, startAt).
+  try {
+    await prisma.$transaction(async (tx) => {
+      const conflict = await tx.appointment.findFirst({
+        where: {
+          doctorProfileId,
+          status: { in: ["PENDING", "CONFIRMED"] },
+          startAt: { lt: slotEnd },
+          endAt: { gt: slotStart },
+        },
+      })
+      if (conflict) throw new Error("SLOT_TAKEN")
+
+      await tx.appointment.create({
+        data: {
+          doctorProfileId,
+          patientProfileId: patientProfile.id,
+          startAt: slotStart,
+          endAt: slotEnd,
+          status: "PENDING",
+          notes: sanitizedNotes,
+        },
+      })
+    })
+  } catch (err) {
+    if (err instanceof Error && err.message === "SLOT_TAKEN") {
+      return { error: "Este horário não está mais disponível. Escolha outro." }
+    }
+    throw err
+  }
 
   revalidatePath("/dashboard/patient/consultas")
   revalidatePath("/dashboard/doctor/agendamentos")

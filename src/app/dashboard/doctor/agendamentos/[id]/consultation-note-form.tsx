@@ -31,25 +31,25 @@ export function ConsultationNoteForm({ appointmentId, note }: Props) {
 
         <div>
           <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Queixa principal</label>
-          <textarea name="complaint" defaultValue={note?.complaint ?? ""} rows={2}
+          <textarea name="complaint" defaultValue={note?.complaint ?? ""} rows={2} maxLength={10000}
             placeholder="Descrição da queixa do paciente..." className={textarea} />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Diagnóstico</label>
-          <textarea name="diagnosis" defaultValue={note?.diagnosis ?? ""} rows={2}
+          <textarea name="diagnosis" defaultValue={note?.diagnosis ?? ""} rows={2} maxLength={10000}
             placeholder="Diagnóstico ou hipótese diagnóstica..." className={textarea} />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Prescrição</label>
-          <textarea name="prescription" defaultValue={note?.prescription ?? ""} rows={3}
+          <textarea name="prescription" defaultValue={note?.prescription ?? ""} rows={3} maxLength={10000}
             placeholder="Medicamentos, dosagens, orientações..." className={textarea} />
         </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Observações</label>
-          <textarea name="notes" defaultValue={note?.notes ?? ""} rows={2}
+          <textarea name="notes" defaultValue={note?.notes ?? ""} rows={2} maxLength={10000}
             placeholder="Outras anotações relevantes..." className={textarea} />
         </div>
 

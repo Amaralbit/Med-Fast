@@ -3,9 +3,15 @@ import { prisma } from "@/server/db"
 import Anthropic from "@anthropic-ai/sdk"
 import { getAvailableSlots } from "@/lib/slots"
 import { sendNewAppointmentToDoctor } from "@/lib/email"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
+
+const NOTES_MAX = 2000
+const SLUG_RE = /^[a-z0-9-]+$/
+const MAX_MESSAGES = 50
+const MAX_MESSAGE_CHARS = 10_000
 
 function getAnthropic() {
   const apiKey = process.env.ANTHROPIC_API_KEY
@@ -43,12 +49,62 @@ const TOOLS: Anthropic.Tool[] = [
 ]
 
 export async function POST(req: Request) {
-  const anthropic = getAnthropic()
-  const { messages, doctorSlug } = await req.json() as {
-    messages: Anthropic.MessageParam[]
-    doctorSlug: string
+  // ── CORS: only accept same-origin requests ─────────────────────────────────
+  const origin = req.headers.get("origin")
+  const host = req.headers.get("host")
+  if (origin && host && !origin.includes(host)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 })
   }
 
+  // ── Rate limiting: 20 chat requests per minute per IP ──────────────────────
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1"
+  const rl = checkRateLimit(`chat:${ip}`, 20, 60 * 1000)
+  if (!rl.allowed) {
+    return Response.json(
+      { error: "Muitas requisições. Aguarde um momento." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) },
+      }
+    )
+  }
+
+  // ── Input validation ────────────────────────────────────────────────────────
+  let body: { messages?: unknown; doctorSlug?: unknown }
+  try {
+    body = await req.json()
+  } catch {
+    return Response.json({ error: "JSON inválido" }, { status: 400 })
+  }
+
+  const { messages: rawMessages, doctorSlug } = body
+
+  if (typeof doctorSlug !== "string" || !SLUG_RE.test(doctorSlug) || doctorSlug.length > 100) {
+    return Response.json({ error: "Slug inválido" }, { status: 400 })
+  }
+
+  if (!Array.isArray(rawMessages) || rawMessages.length === 0) {
+    return Response.json({ error: "Mensagens inválidas" }, { status: 400 })
+  }
+
+  if (rawMessages.length > MAX_MESSAGES) {
+    return Response.json({ error: "Histórico muito longo" }, { status: 400 })
+  }
+
+  // Validate each message shape and truncate oversized content
+  const messages: Anthropic.MessageParam[] = rawMessages.map((m) => {
+    if (typeof m !== "object" || m === null) throw new Error("invalid")
+    const msg = m as Record<string, unknown>
+    if (msg.role !== "user" && msg.role !== "assistant") throw new Error("invalid role")
+    if (typeof msg.content !== "string") throw new Error("invalid content")
+    return {
+      role: msg.role as "user" | "assistant",
+      content: (msg.content as string).slice(0, MAX_MESSAGE_CHARS),
+    }
+  })
+
+  const anthropic = getAnthropic()
   const session = await auth()
 
   const doctor = await prisma.doctorProfile.findUnique({
@@ -81,7 +137,8 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
 
   const processToolCall = async (name: string, input: Record<string, unknown>): Promise<string> => {
     if (name === "check_available_slots") {
-      const daysAhead = (input.days_ahead as number) || 14
+      // Clamp days_ahead to prevent excessive computation
+      const daysAhead = Math.min(Math.max(1, Number(input.days_ahead) || 14), 30)
       const slots = getAvailableSlots(
         doctor.availabilities,
         doctor.appointments,
@@ -102,7 +159,14 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
       if (!patientProfile) return JSON.stringify({ error: "NO_PROFILE" })
 
       const startAt = new Date(input.slot_datetime as string)
+      if (isNaN(startAt.getTime())) return JSON.stringify({ error: "INVALID_DATETIME" })
+
       const endAt = new Date(startAt.getTime() + doctor.consultationDurationMinutes * 60 * 1000)
+
+      // Sanitize and cap notes supplied by the AI
+      const notes = typeof input.notes === "string"
+        ? input.notes.trim().slice(0, NOTES_MAX) || null
+        : null
 
       const conflict = await prisma.appointment.findFirst({
         where: {
@@ -126,7 +190,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
           startAt,
           endAt,
           status: "PENDING",
-          notes: (input.notes as string) || null,
+          notes,
         },
       })
 
@@ -137,7 +201,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
         patientEmail: patientUser?.email ?? "",
         startAt,
         endAt,
-        notes: (input.notes as string) || null,
+        notes,
       }).catch(() => {})
 
       return JSON.stringify({

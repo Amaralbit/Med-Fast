@@ -8,6 +8,19 @@ import { sendDocumentUploadedToPatient } from "@/lib/email"
 
 export type MedicalState = { error?: string; success?: boolean }
 
+const TEXT_MAX = 10_000  // max chars for free-text medical fields
+const TITLE_MAX = 200
+
+/** Strip path separators and shell metacharacters from filenames. */
+function sanitizeFilename(name: string): string {
+  return name
+    .replace(/[/\\:*?"<>|]/g, "_")  // path separators and shell special chars
+    .replace(/\.{2,}/g, "_")          // block directory traversal (..)
+    .replace(/^\./, "_")              // no leading dot (hidden files)
+    .slice(0, 100)                    // hard cap
+    || "arquivo"
+}
+
 // ─── Prontuário ───────────────────────────────────────────────────────────────
 
 export async function saveConsultationNote(_: MedicalState, formData: FormData): Promise<MedicalState> {
@@ -25,10 +38,10 @@ export async function saveConsultationNote(_: MedicalState, formData: FormData):
   })
   if (!appt) return { error: "Consulta não encontrada" }
 
-  const complaint = formData.get("complaint")?.toString().trim() || null
-  const diagnosis = formData.get("diagnosis")?.toString().trim() || null
-  const prescription = formData.get("prescription")?.toString().trim() || null
-  const notes = formData.get("notes")?.toString().trim() || null
+  const complaint    = formData.get("complaint")?.toString().trim().slice(0, TEXT_MAX) || null
+  const diagnosis    = formData.get("diagnosis")?.toString().trim().slice(0, TEXT_MAX) || null
+  const prescription = formData.get("prescription")?.toString().trim().slice(0, TEXT_MAX) || null
+  const notes        = formData.get("notes")?.toString().trim().slice(0, TEXT_MAX) || null
 
   await prisma.consultationNote.upsert({
     where: { appointmentId },
@@ -47,12 +60,15 @@ export async function uploadMedicalDocument(_: MedicalState, formData: FormData)
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
 
   const appointmentId = formData.get("appointmentId")?.toString()
-  const title = formData.get("title")?.toString().trim()
-  const type = formData.get("type")?.toString()
-  const file = formData.get("file") as File | null
+  const rawTitle      = formData.get("title")?.toString().trim()
+  const type          = formData.get("type")?.toString()
+  const file          = formData.get("file") as File | null
 
-  if (!appointmentId || !title || !type || !file || file.size === 0)
+  if (!appointmentId || !rawTitle || !type || !file || file.size === 0)
     return { error: "Preencha todos os campos" }
+
+  const title = rawTitle.slice(0, TITLE_MAX)
+
   if (file.type !== "application/pdf")
     return { error: "Apenas arquivos PDF são aceitos" }
   if (file.size > 10 * 1024 * 1024)
@@ -72,8 +88,11 @@ export async function uploadMedicalDocument(_: MedicalState, formData: FormData)
   })
   if (!appt) return { error: "Consulta não encontrada" }
 
+  // Sanitize the filename before using it in the blob path to prevent path traversal
+  const safeFilename = sanitizeFilename(file.name)
+
   const blob = await put(
-    `medfast/${profile.id}/${appointmentId}/${Date.now()}-${file.name}`,
+    `medfast/${profile.id}/${appointmentId}/${Date.now()}-${safeFilename}`,
     file,
     { access: "public" },
   )
