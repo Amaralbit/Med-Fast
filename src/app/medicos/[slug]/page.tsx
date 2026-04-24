@@ -3,6 +3,7 @@ import { auth } from "@/auth"
 import { notFound } from "next/navigation"
 import { MapPin, Clock, CreditCard, Phone, Calendar } from "lucide-react"
 import { ChatWidget } from "./chat-widget"
+import { BookingWidget } from "./booking-widget"
 
 const DAY_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
@@ -21,7 +22,7 @@ type Props = { params: Promise<{ slug: string }> }
 export default async function DoctorPublicPage({ params }: Props) {
   const { slug } = await params
 
-  const [doctor] = await Promise.all([
+  const [doctor, session] = await Promise.all([
     prisma.doctorProfile.findUnique({
       where: { slug },
       include: {
@@ -170,6 +171,16 @@ export default async function DoctorPublicPage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* Agendamento */}
+        <BookingWidget
+          doctorProfileId={doctor.id}
+          doctorName={doctor.user.name}
+          colorPrimary={primary}
+          availableDays={doctor.availabilities.map((a) => a.dayOfWeek) as never}
+          isLoggedIn={!!session}
+          isPatient={session?.user.role === "PATIENT"}
+        />
 
         {/* CTA */}
         {doctor.whatsapp && (
