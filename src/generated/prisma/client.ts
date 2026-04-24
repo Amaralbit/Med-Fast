@@ -92,6 +92,16 @@ export type Appointment = Prisma.AppointmentModel
  */
 export type ChatQuestion = Prisma.ChatQuestionModel
 /**
+ * Model ConsultationNote
+ * 
+ */
+export type ConsultationNote = Prisma.ConsultationNoteModel
+/**
+ * Model MedicalDocument
+ * 
+ */
+export type MedicalDocument = Prisma.MedicalDocumentModel
+/**
  * Model Notification
  * 
  */

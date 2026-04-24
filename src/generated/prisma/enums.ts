@@ -37,6 +37,15 @@ export const MediaType = {
 export type MediaType = (typeof MediaType)[keyof typeof MediaType]
 
 
+export const DocType = {
+  PRESCRIPTION: 'PRESCRIPTION',
+  CERTIFICATE: 'CERTIFICATE',
+  OTHER: 'OTHER'
+} as const
+
+export type DocType = (typeof DocType)[keyof typeof DocType]
+
+
 export const DayOfWeek = {
   SUNDAY: 'SUNDAY',
   MONDAY: 'MONDAY',

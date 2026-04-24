@@ -61,6 +61,8 @@ export const ModelName = {
   BlockedSlot: 'BlockedSlot',
   Appointment: 'Appointment',
   ChatQuestion: 'ChatQuestion',
+  ConsultationNote: 'ConsultationNote',
+  MedicalDocument: 'MedicalDocument',
   Notification: 'Notification'
 } as const
 
@@ -211,6 +213,36 @@ export const ChatQuestionScalarFieldEnum = {
 } as const
 
 export type ChatQuestionScalarFieldEnum = (typeof ChatQuestionScalarFieldEnum)[keyof typeof ChatQuestionScalarFieldEnum]
+
+
+export const ConsultationNoteScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  doctorProfileId: 'doctorProfileId',
+  patientProfileId: 'patientProfileId',
+  complaint: 'complaint',
+  diagnosis: 'diagnosis',
+  prescription: 'prescription',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConsultationNoteScalarFieldEnum = (typeof ConsultationNoteScalarFieldEnum)[keyof typeof ConsultationNoteScalarFieldEnum]
+
+
+export const MedicalDocumentScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  doctorProfileId: 'doctorProfileId',
+  patientProfileId: 'patientProfileId',
+  type: 'type',
+  title: 'title',
+  fileUrl: 'fileUrl',
+  createdAt: 'createdAt'
+} as const
+
+export type MedicalDocumentScalarFieldEnum = (typeof MedicalDocumentScalarFieldEnum)[keyof typeof MedicalDocumentScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

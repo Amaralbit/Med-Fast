@@ -1,8 +1,9 @@
 import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 import { confirmAppointment, cancelAppointment, completeAppointment } from "@/app/actions/doctor"
-import { Check, X, CheckCheck, Clock, CalendarX } from "lucide-react"
+import { Check, X, CheckCheck, Clock, CalendarX, ArrowRight } from "lucide-react"
 
 type AppointmentStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW"
 
@@ -131,6 +132,12 @@ export default async function AgendamentosPage({ searchParams }: Props) {
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${cfg.className}`}>
                       {cfg.label}
                     </span>
+                    <Link
+                      href={`/dashboard/doctor/agendamentos/${appt.id}`}
+                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-blue-500 dark:hover:text-cyan-400 transition-colors"
+                    >
+                      Detalhes <ArrowRight size={11} />
+                    </Link>
 
                     {status === "PENDING" && (
                       <div className="flex gap-1.5">

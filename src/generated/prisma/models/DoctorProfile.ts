@@ -331,6 +331,8 @@ export type DoctorProfileWhereInput = {
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   appointments?: Prisma.AppointmentListRelationFilter
   chatQuestions?: Prisma.ChatQuestionListRelationFilter
+  medicalDocuments?: Prisma.MedicalDocumentListRelationFilter
+  consultationNotes?: Prisma.ConsultationNoteListRelationFilter
 }
 
 export type DoctorProfileOrderByWithRelationInput = {
@@ -359,6 +361,8 @@ export type DoctorProfileOrderByWithRelationInput = {
   blockedSlots?: Prisma.BlockedSlotOrderByRelationAggregateInput
   appointments?: Prisma.AppointmentOrderByRelationAggregateInput
   chatQuestions?: Prisma.ChatQuestionOrderByRelationAggregateInput
+  medicalDocuments?: Prisma.MedicalDocumentOrderByRelationAggregateInput
+  consultationNotes?: Prisma.ConsultationNoteOrderByRelationAggregateInput
 }
 
 export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -390,6 +394,8 @@ export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
   blockedSlots?: Prisma.BlockedSlotListRelationFilter
   appointments?: Prisma.AppointmentListRelationFilter
   chatQuestions?: Prisma.ChatQuestionListRelationFilter
+  medicalDocuments?: Prisma.MedicalDocumentListRelationFilter
+  consultationNotes?: Prisma.ConsultationNoteListRelationFilter
 }, "id" | "userId" | "crm" | "slug">
 
 export type DoctorProfileOrderByWithAggregationInput = {
@@ -467,6 +473,8 @@ export type DoctorProfileCreateInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateInput = {
@@ -494,6 +502,8 @@ export type DoctorProfileUncheckedCreateInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUpdateInput = {
@@ -521,6 +531,8 @@ export type DoctorProfileUpdateInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateInput = {
@@ -548,6 +560,8 @@ export type DoctorProfileUncheckedUpdateInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateManyInput = {
@@ -831,6 +845,34 @@ export type DoctorProfileUpdateOneRequiredWithoutChatQuestionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DoctorProfileUpdateToOneWithWhereWithoutChatQuestionsInput, Prisma.DoctorProfileUpdateWithoutChatQuestionsInput>, Prisma.DoctorProfileUncheckedUpdateWithoutChatQuestionsInput>
 }
 
+export type DoctorProfileCreateNestedOneWithoutConsultationNotesInput = {
+  create?: Prisma.XOR<Prisma.DoctorProfileCreateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedCreateWithoutConsultationNotesInput>
+  connectOrCreate?: Prisma.DoctorProfileCreateOrConnectWithoutConsultationNotesInput
+  connect?: Prisma.DoctorProfileWhereUniqueInput
+}
+
+export type DoctorProfileUpdateOneRequiredWithoutConsultationNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.DoctorProfileCreateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedCreateWithoutConsultationNotesInput>
+  connectOrCreate?: Prisma.DoctorProfileCreateOrConnectWithoutConsultationNotesInput
+  upsert?: Prisma.DoctorProfileUpsertWithoutConsultationNotesInput
+  connect?: Prisma.DoctorProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DoctorProfileUpdateToOneWithWhereWithoutConsultationNotesInput, Prisma.DoctorProfileUpdateWithoutConsultationNotesInput>, Prisma.DoctorProfileUncheckedUpdateWithoutConsultationNotesInput>
+}
+
+export type DoctorProfileCreateNestedOneWithoutMedicalDocumentsInput = {
+  create?: Prisma.XOR<Prisma.DoctorProfileCreateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput>
+  connectOrCreate?: Prisma.DoctorProfileCreateOrConnectWithoutMedicalDocumentsInput
+  connect?: Prisma.DoctorProfileWhereUniqueInput
+}
+
+export type DoctorProfileUpdateOneRequiredWithoutMedicalDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.DoctorProfileCreateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput>
+  connectOrCreate?: Prisma.DoctorProfileCreateOrConnectWithoutMedicalDocumentsInput
+  upsert?: Prisma.DoctorProfileUpsertWithoutMedicalDocumentsInput
+  connect?: Prisma.DoctorProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DoctorProfileUpdateToOneWithWhereWithoutMedicalDocumentsInput, Prisma.DoctorProfileUpdateWithoutMedicalDocumentsInput>, Prisma.DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput>
+}
+
 export type DoctorProfileCreateWithoutUserInput = {
   id?: string
   crm?: string | null
@@ -855,6 +897,8 @@ export type DoctorProfileCreateWithoutUserInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutUserInput = {
@@ -881,6 +925,8 @@ export type DoctorProfileUncheckedCreateWithoutUserInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutUserInput = {
@@ -923,6 +969,8 @@ export type DoctorProfileUpdateWithoutUserInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutUserInput = {
@@ -949,6 +997,8 @@ export type DoctorProfileUncheckedUpdateWithoutUserInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutMediaInput = {
@@ -975,6 +1025,8 @@ export type DoctorProfileCreateWithoutMediaInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutMediaInput = {
@@ -1001,6 +1053,8 @@ export type DoctorProfileUncheckedCreateWithoutMediaInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutMediaInput = {
@@ -1043,6 +1097,8 @@ export type DoctorProfileUpdateWithoutMediaInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutMediaInput = {
@@ -1069,6 +1125,8 @@ export type DoctorProfileUncheckedUpdateWithoutMediaInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutHealthPlansInput = {
@@ -1095,6 +1153,8 @@ export type DoctorProfileCreateWithoutHealthPlansInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutHealthPlansInput = {
@@ -1121,6 +1181,8 @@ export type DoctorProfileUncheckedCreateWithoutHealthPlansInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutHealthPlansInput = {
@@ -1163,6 +1225,8 @@ export type DoctorProfileUpdateWithoutHealthPlansInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutHealthPlansInput = {
@@ -1189,6 +1253,8 @@ export type DoctorProfileUncheckedUpdateWithoutHealthPlansInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutAvailabilitiesInput = {
@@ -1215,6 +1281,8 @@ export type DoctorProfileCreateWithoutAvailabilitiesInput = {
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutAvailabilitiesInput = {
@@ -1241,6 +1309,8 @@ export type DoctorProfileUncheckedCreateWithoutAvailabilitiesInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutAvailabilitiesInput = {
@@ -1283,6 +1353,8 @@ export type DoctorProfileUpdateWithoutAvailabilitiesInput = {
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutAvailabilitiesInput = {
@@ -1309,6 +1381,8 @@ export type DoctorProfileUncheckedUpdateWithoutAvailabilitiesInput = {
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutBlockedSlotsInput = {
@@ -1335,6 +1409,8 @@ export type DoctorProfileCreateWithoutBlockedSlotsInput = {
   availabilities?: Prisma.WeeklyAvailabilityCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutBlockedSlotsInput = {
@@ -1361,6 +1437,8 @@ export type DoctorProfileUncheckedCreateWithoutBlockedSlotsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutBlockedSlotsInput = {
@@ -1403,6 +1481,8 @@ export type DoctorProfileUpdateWithoutBlockedSlotsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutBlockedSlotsInput = {
@@ -1429,6 +1509,8 @@ export type DoctorProfileUncheckedUpdateWithoutBlockedSlotsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutAppointmentsInput = {
@@ -1455,6 +1537,8 @@ export type DoctorProfileCreateWithoutAppointmentsInput = {
   availabilities?: Prisma.WeeklyAvailabilityCreateNestedManyWithoutDoctorProfileInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutAppointmentsInput = {
@@ -1481,6 +1565,8 @@ export type DoctorProfileUncheckedCreateWithoutAppointmentsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedCreateNestedManyWithoutDoctorProfileInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutAppointmentsInput = {
@@ -1523,6 +1609,8 @@ export type DoctorProfileUpdateWithoutAppointmentsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUpdateManyWithoutDoctorProfileNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutAppointmentsInput = {
@@ -1549,6 +1637,8 @@ export type DoctorProfileUncheckedUpdateWithoutAppointmentsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedUpdateManyWithoutDoctorProfileNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileCreateWithoutChatQuestionsInput = {
@@ -1575,6 +1665,8 @@ export type DoctorProfileCreateWithoutChatQuestionsInput = {
   availabilities?: Prisma.WeeklyAvailabilityCreateNestedManyWithoutDoctorProfileInput
   blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileUncheckedCreateWithoutChatQuestionsInput = {
@@ -1601,6 +1693,8 @@ export type DoctorProfileUncheckedCreateWithoutChatQuestionsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedCreateNestedManyWithoutDoctorProfileInput
   blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
   appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
 }
 
 export type DoctorProfileCreateOrConnectWithoutChatQuestionsInput = {
@@ -1643,6 +1737,8 @@ export type DoctorProfileUpdateWithoutChatQuestionsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUpdateManyWithoutDoctorProfileNestedInput
   blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
 }
 
 export type DoctorProfileUncheckedUpdateWithoutChatQuestionsInput = {
@@ -1669,6 +1765,264 @@ export type DoctorProfileUncheckedUpdateWithoutChatQuestionsInput = {
   availabilities?: Prisma.WeeklyAvailabilityUncheckedUpdateManyWithoutDoctorProfileNestedInput
   blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
   appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
+}
+
+export type DoctorProfileCreateWithoutConsultationNotesInput = {
+  id?: string
+  crm?: string | null
+  specialty?: string | null
+  bio?: string | null
+  whatsapp?: string | null
+  consultationDurationMinutes?: number
+  pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: string
+  colorAccent?: string
+  addressStreet?: string | null
+  addressCity?: string | null
+  addressState?: string | null
+  addressZip?: string | null
+  slug: string
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
+  media?: Prisma.DoctorMediaCreateNestedManyWithoutDoctorProfileInput
+  healthPlans?: Prisma.DoctorHealthPlanCreateNestedManyWithoutDoctorProfileInput
+  availabilities?: Prisma.WeeklyAvailabilityCreateNestedManyWithoutDoctorProfileInput
+  blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
+  chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentCreateNestedManyWithoutDoctorProfileInput
+}
+
+export type DoctorProfileUncheckedCreateWithoutConsultationNotesInput = {
+  id?: string
+  userId: string
+  crm?: string | null
+  specialty?: string | null
+  bio?: string | null
+  whatsapp?: string | null
+  consultationDurationMinutes?: number
+  pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: string
+  colorAccent?: string
+  addressStreet?: string | null
+  addressCity?: string | null
+  addressState?: string | null
+  addressZip?: string | null
+  slug: string
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
+  healthPlans?: Prisma.DoctorHealthPlanUncheckedCreateNestedManyWithoutDoctorProfileInput
+  availabilities?: Prisma.WeeklyAvailabilityUncheckedCreateNestedManyWithoutDoctorProfileInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
+  appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedCreateNestedManyWithoutDoctorProfileInput
+}
+
+export type DoctorProfileCreateOrConnectWithoutConsultationNotesInput = {
+  where: Prisma.DoctorProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.DoctorProfileCreateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedCreateWithoutConsultationNotesInput>
+}
+
+export type DoctorProfileUpsertWithoutConsultationNotesInput = {
+  update: Prisma.XOR<Prisma.DoctorProfileUpdateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedUpdateWithoutConsultationNotesInput>
+  create: Prisma.XOR<Prisma.DoctorProfileCreateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedCreateWithoutConsultationNotesInput>
+  where?: Prisma.DoctorProfileWhereInput
+}
+
+export type DoctorProfileUpdateToOneWithWhereWithoutConsultationNotesInput = {
+  where?: Prisma.DoctorProfileWhereInput
+  data: Prisma.XOR<Prisma.DoctorProfileUpdateWithoutConsultationNotesInput, Prisma.DoctorProfileUncheckedUpdateWithoutConsultationNotesInput>
+}
+
+export type DoctorProfileUpdateWithoutConsultationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
+  colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
+  addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
+  media?: Prisma.DoctorMediaUpdateManyWithoutDoctorProfileNestedInput
+  healthPlans?: Prisma.DoctorHealthPlanUpdateManyWithoutDoctorProfileNestedInput
+  availabilities?: Prisma.WeeklyAvailabilityUpdateManyWithoutDoctorProfileNestedInput
+  blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
+  appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
+  chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUpdateManyWithoutDoctorProfileNestedInput
+}
+
+export type DoctorProfileUncheckedUpdateWithoutConsultationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  crm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
+  colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
+  addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  healthPlans?: Prisma.DoctorHealthPlanUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  availabilities?: Prisma.WeeklyAvailabilityUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  medicalDocuments?: Prisma.MedicalDocumentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+}
+
+export type DoctorProfileCreateWithoutMedicalDocumentsInput = {
+  id?: string
+  crm?: string | null
+  specialty?: string | null
+  bio?: string | null
+  whatsapp?: string | null
+  consultationDurationMinutes?: number
+  pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: string
+  colorAccent?: string
+  addressStreet?: string | null
+  addressCity?: string | null
+  addressState?: string | null
+  addressZip?: string | null
+  slug: string
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
+  media?: Prisma.DoctorMediaCreateNestedManyWithoutDoctorProfileInput
+  healthPlans?: Prisma.DoctorHealthPlanCreateNestedManyWithoutDoctorProfileInput
+  availabilities?: Prisma.WeeklyAvailabilityCreateNestedManyWithoutDoctorProfileInput
+  blockedSlots?: Prisma.BlockedSlotCreateNestedManyWithoutDoctorProfileInput
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutDoctorProfileInput
+  chatQuestions?: Prisma.ChatQuestionCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteCreateNestedManyWithoutDoctorProfileInput
+}
+
+export type DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput = {
+  id?: string
+  userId: string
+  crm?: string | null
+  specialty?: string | null
+  bio?: string | null
+  whatsapp?: string | null
+  consultationDurationMinutes?: number
+  pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: string
+  colorAccent?: string
+  addressStreet?: string | null
+  addressCity?: string | null
+  addressState?: string | null
+  addressZip?: string | null
+  slug: string
+  isPublished?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
+  healthPlans?: Prisma.DoctorHealthPlanUncheckedCreateNestedManyWithoutDoctorProfileInput
+  availabilities?: Prisma.WeeklyAvailabilityUncheckedCreateNestedManyWithoutDoctorProfileInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedCreateNestedManyWithoutDoctorProfileInput
+  appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutDoctorProfileInput
+  chatQuestions?: Prisma.ChatQuestionUncheckedCreateNestedManyWithoutDoctorProfileInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedCreateNestedManyWithoutDoctorProfileInput
+}
+
+export type DoctorProfileCreateOrConnectWithoutMedicalDocumentsInput = {
+  where: Prisma.DoctorProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.DoctorProfileCreateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput>
+}
+
+export type DoctorProfileUpsertWithoutMedicalDocumentsInput = {
+  update: Prisma.XOR<Prisma.DoctorProfileUpdateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput>
+  create: Prisma.XOR<Prisma.DoctorProfileCreateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput>
+  where?: Prisma.DoctorProfileWhereInput
+}
+
+export type DoctorProfileUpdateToOneWithWhereWithoutMedicalDocumentsInput = {
+  where?: Prisma.DoctorProfileWhereInput
+  data: Prisma.XOR<Prisma.DoctorProfileUpdateWithoutMedicalDocumentsInput, Prisma.DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput>
+}
+
+export type DoctorProfileUpdateWithoutMedicalDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
+  colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
+  addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
+  media?: Prisma.DoctorMediaUpdateManyWithoutDoctorProfileNestedInput
+  healthPlans?: Prisma.DoctorHealthPlanUpdateManyWithoutDoctorProfileNestedInput
+  availabilities?: Prisma.WeeklyAvailabilityUpdateManyWithoutDoctorProfileNestedInput
+  blockedSlots?: Prisma.BlockedSlotUpdateManyWithoutDoctorProfileNestedInput
+  appointments?: Prisma.AppointmentUpdateManyWithoutDoctorProfileNestedInput
+  chatQuestions?: Prisma.ChatQuestionUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUpdateManyWithoutDoctorProfileNestedInput
+}
+
+export type DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  crm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialty?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
+  colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
+  addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  healthPlans?: Prisma.DoctorHealthPlanUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  availabilities?: Prisma.WeeklyAvailabilityUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  blockedSlots?: Prisma.BlockedSlotUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  chatQuestions?: Prisma.ChatQuestionUncheckedUpdateManyWithoutDoctorProfileNestedInput
+  consultationNotes?: Prisma.ConsultationNoteUncheckedUpdateManyWithoutDoctorProfileNestedInput
 }
 
 
@@ -1683,6 +2037,8 @@ export type DoctorProfileCountOutputType = {
   blockedSlots: number
   appointments: number
   chatQuestions: number
+  medicalDocuments: number
+  consultationNotes: number
 }
 
 export type DoctorProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1692,6 +2048,8 @@ export type DoctorProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Ext
   blockedSlots?: boolean | DoctorProfileCountOutputTypeCountBlockedSlotsArgs
   appointments?: boolean | DoctorProfileCountOutputTypeCountAppointmentsArgs
   chatQuestions?: boolean | DoctorProfileCountOutputTypeCountChatQuestionsArgs
+  medicalDocuments?: boolean | DoctorProfileCountOutputTypeCountMedicalDocumentsArgs
+  consultationNotes?: boolean | DoctorProfileCountOutputTypeCountConsultationNotesArgs
 }
 
 /**
@@ -1746,6 +2104,20 @@ export type DoctorProfileCountOutputTypeCountChatQuestionsArgs<ExtArgs extends r
   where?: Prisma.ChatQuestionWhereInput
 }
 
+/**
+ * DoctorProfileCountOutputType without action
+ */
+export type DoctorProfileCountOutputTypeCountMedicalDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MedicalDocumentWhereInput
+}
+
+/**
+ * DoctorProfileCountOutputType without action
+ */
+export type DoctorProfileCountOutputTypeCountConsultationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConsultationNoteWhereInput
+}
+
 
 export type DoctorProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1773,6 +2145,8 @@ export type DoctorProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   blockedSlots?: boolean | Prisma.DoctorProfile$blockedSlotsArgs<ExtArgs>
   appointments?: boolean | Prisma.DoctorProfile$appointmentsArgs<ExtArgs>
   chatQuestions?: boolean | Prisma.DoctorProfile$chatQuestionsArgs<ExtArgs>
+  medicalDocuments?: boolean | Prisma.DoctorProfile$medicalDocumentsArgs<ExtArgs>
+  consultationNotes?: boolean | Prisma.DoctorProfile$consultationNotesArgs<ExtArgs>
   _count?: boolean | Prisma.DoctorProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["doctorProfile"]>
 
@@ -1850,6 +2224,8 @@ export type DoctorProfileInclude<ExtArgs extends runtime.Types.Extensions.Intern
   blockedSlots?: boolean | Prisma.DoctorProfile$blockedSlotsArgs<ExtArgs>
   appointments?: boolean | Prisma.DoctorProfile$appointmentsArgs<ExtArgs>
   chatQuestions?: boolean | Prisma.DoctorProfile$chatQuestionsArgs<ExtArgs>
+  medicalDocuments?: boolean | Prisma.DoctorProfile$medicalDocumentsArgs<ExtArgs>
+  consultationNotes?: boolean | Prisma.DoctorProfile$consultationNotesArgs<ExtArgs>
   _count?: boolean | Prisma.DoctorProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DoctorProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1869,6 +2245,8 @@ export type $DoctorProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     blockedSlots: Prisma.$BlockedSlotPayload<ExtArgs>[]
     appointments: Prisma.$AppointmentPayload<ExtArgs>[]
     chatQuestions: Prisma.$ChatQuestionPayload<ExtArgs>[]
+    medicalDocuments: Prisma.$MedicalDocumentPayload<ExtArgs>[]
+    consultationNotes: Prisma.$ConsultationNotePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2290,6 +2668,8 @@ export interface Prisma__DoctorProfileClient<T, Null = never, ExtArgs extends ru
   blockedSlots<T extends Prisma.DoctorProfile$blockedSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DoctorProfile$blockedSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   appointments<T extends Prisma.DoctorProfile$appointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DoctorProfile$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatQuestions<T extends Prisma.DoctorProfile$chatQuestionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DoctorProfile$chatQuestionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatQuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  medicalDocuments<T extends Prisma.DoctorProfile$medicalDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DoctorProfile$medicalDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MedicalDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  consultationNotes<T extends Prisma.DoctorProfile$consultationNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DoctorProfile$consultationNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsultationNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2879,6 +3259,54 @@ export type DoctorProfile$chatQuestionsArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.ChatQuestionScalarFieldEnum | Prisma.ChatQuestionScalarFieldEnum[]
+}
+
+/**
+ * DoctorProfile.medicalDocuments
+ */
+export type DoctorProfile$medicalDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MedicalDocument
+   */
+  select?: Prisma.MedicalDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MedicalDocument
+   */
+  omit?: Prisma.MedicalDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MedicalDocumentInclude<ExtArgs> | null
+  where?: Prisma.MedicalDocumentWhereInput
+  orderBy?: Prisma.MedicalDocumentOrderByWithRelationInput | Prisma.MedicalDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.MedicalDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MedicalDocumentScalarFieldEnum | Prisma.MedicalDocumentScalarFieldEnum[]
+}
+
+/**
+ * DoctorProfile.consultationNotes
+ */
+export type DoctorProfile$consultationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConsultationNote
+   */
+  select?: Prisma.ConsultationNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConsultationNote
+   */
+  omit?: Prisma.ConsultationNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConsultationNoteInclude<ExtArgs> | null
+  where?: Prisma.ConsultationNoteWhereInput
+  orderBy?: Prisma.ConsultationNoteOrderByWithRelationInput | Prisma.ConsultationNoteOrderByWithRelationInput[]
+  cursor?: Prisma.ConsultationNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConsultationNoteScalarFieldEnum | Prisma.ConsultationNoteScalarFieldEnum[]
 }
 
 /**

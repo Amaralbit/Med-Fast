@@ -3,7 +3,9 @@ import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { cancelPatientAppointment } from "@/app/actions/patient"
-import { Clock, CalendarX, ExternalLink, X } from "lucide-react"
+import { Clock, CalendarX, ExternalLink, X, FileText } from "lucide-react"
+
+const DOC_LABEL: Record<string, string> = { PRESCRIPTION: "Receita", CERTIFICATE: "Atestado", OTHER: "Documento" }
 
 type AppointmentStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW"
 
@@ -43,6 +45,7 @@ export default async function ConsultasPage({ searchParams }: Props) {
       doctorProfile: {
         include: { user: { select: { name: true } } },
       },
+      documents: { orderBy: { createdAt: "desc" } },
     },
     orderBy: { startAt: activeTab.key === "upcoming" ? "asc" : "desc" },
   })
@@ -164,6 +167,23 @@ export default async function ConsultasPage({ searchParams }: Props) {
                         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5 italic">
                           &ldquo;{appt.notes}&rdquo;
                         </p>
+                      )}
+
+                      {appt.documents.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {appt.documents.map((doc) => (
+                            <a
+                              key={doc.id}
+                              href={doc.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-cyan-400 hover:underline"
+                            >
+                              <FileText size={11} />
+                              {DOC_LABEL[doc.type] ?? "Documento"} — {doc.title}
+                            </a>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </div>

@@ -270,6 +270,23 @@ export type EnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAppointmentStatusFilter<$PrismaModel>
 }
 
+export type EnumDocTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocType | Prisma.EnumDocTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocTypeFilter<$PrismaModel> | $Enums.DocType
+}
+
+export type EnumDocTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocType | Prisma.EnumDocTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocTypeWithAggregatesFilter<$PrismaModel> | $Enums.DocType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocTypeFilter<$PrismaModel>
+}
+
 export type JsonNullableFilter<$PrismaModel = never> =
 | Prisma.PatchUndefined<
     Prisma.Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -588,6 +605,23 @@ export type NestedEnumAppointmentStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAppointmentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAppointmentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumDocTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocType | Prisma.EnumDocTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocTypeFilter<$PrismaModel> | $Enums.DocType
+}
+
+export type NestedEnumDocTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocType | Prisma.EnumDocTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocType[] | Prisma.ListEnumDocTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocTypeWithAggregatesFilter<$PrismaModel> | $Enums.DocType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocTypeFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =

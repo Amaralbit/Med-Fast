@@ -157,7 +157,40 @@ export async function sendAppointmentCancelledToPatient(params: {
   })
 }
 
-// ─── 4. Consulta cancelada pelo paciente → médico ─────────────────────────────
+// ─── 4. Documento enviado pelo médico → paciente ─────────────────────────────
+
+export async function sendDocumentUploadedToPatient(params: {
+  patientEmail: string
+  patientName: string
+  doctorName: string
+  documentTitle: string
+  documentType: string
+  fileUrl: string
+}) {
+  const { patientEmail, patientName, doctorName, documentTitle, documentType, fileUrl } = params
+  const typeLabel = ({ PRESCRIPTION: "Receita", CERTIFICATE: "Atestado", OTHER: "Documento" } as Record<string, string>)[documentType] ?? "Documento"
+
+  const content = `
+    <h2 style="margin:0 0 8px;color:#111827;font-size:20px;font-weight:700;">Novo documento disponível</h2>
+    <p style="margin:0 0 24px;color:#6b7280;font-size:14px;">Olá, ${patientName}. O Dr. ${doctorName} enviou um documento para você.</p>
+    <table cellpadding="0" cellspacing="0" style="background:#f0f9ff;border-radius:8px;padding:16px 20px;width:100%;border:1px solid #bae6fd;">
+      ${infoRow("Tipo", typeLabel)}
+      ${infoRow("Título", documentTitle)}
+      ${infoRow("Enviado por", `Dr. ${doctorName}`)}
+    </table>
+    <p style="margin:16px 0 0;color:#6b7280;font-size:13px;">Você também pode acessar o documento direto nas suas consultas.</p>
+    ${ctaButton("Baixar documento", fileUrl)}
+  `
+
+  await getResend().emails.send({
+    from: FROM,
+    to: patientEmail,
+    subject: `${typeLabel} disponível — Dr. ${doctorName}`,
+    html: baseTemplate(content),
+  })
+}
+
+// ─── 5. Consulta cancelada pelo paciente → médico ─────────────────────────────
 
 export async function sendAppointmentCancelledToDoctor(params: {
   doctorEmail: string
