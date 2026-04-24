@@ -98,6 +98,13 @@ export default async function ConsultasPage({ searchParams }: Props) {
             const doctor = appt.doctorProfile
             const start = new Date(appt.startAt)
             const end = new Date(appt.endAt)
+            const tz = "America/Sao_Paulo"
+            const startDay = start.toLocaleDateString("pt-BR", { day: "2-digit", timeZone: tz })
+            const startMonth = start.toLocaleDateString("pt-BR", { month: "short", timeZone: tz })
+            const startYear = start.toLocaleDateString("pt-BR", { year: "numeric", timeZone: tz })
+            const startTime = start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: tz })
+            const endTime = end.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: tz })
+            const weekday = start.toLocaleDateString("pt-BR", { weekday: "long", timeZone: tz })
             const canCancel = status === "PENDING" || status === "CONFIRMED"
 
             return (
@@ -111,13 +118,13 @@ export default async function ConsultasPage({ searchParams }: Props) {
                     {/* Date block */}
                     <div className="shrink-0 w-14 text-center">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white leading-none">
-                        {start.getDate().toString().padStart(2, "0")}
+                        {startDay}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 capitalize">
-                        {start.toLocaleDateString("pt-BR", { month: "short" })}
+                        {startMonth}
                       </p>
                       <p className="text-xs text-gray-400 dark:text-gray-600">
-                        {start.getFullYear()}
+                        {startYear}
                       </p>
                     </div>
 
@@ -145,11 +152,11 @@ export default async function ConsultasPage({ searchParams }: Props) {
                       <div className="flex items-center gap-1.5 mt-2">
                         <Clock size={12} className="text-gray-400 shrink-0" />
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                          {startTime}
                           {" – "}
-                          {end.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                          {endTime}
                           {" · "}
-                          {start.toLocaleDateString("pt-BR", { weekday: "long" })}
+                          {weekday}
                         </span>
                       </div>
 

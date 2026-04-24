@@ -86,11 +86,11 @@ export default async function AgendamentosPage({ searchParams }: Props) {
             const patient = appt.patientProfile.user
             const start = new Date(appt.startAt)
             const end = new Date(appt.endAt)
+            const tz = "America/Sao_Paulo"
 
-            const dateLabel = start.toLocaleDateString("pt-BR", {
-              weekday: "short", day: "2-digit", month: "short", year: "numeric",
-            })
-            const timeLabel = `${start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} – ${end.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+            const startDay = start.toLocaleDateString("pt-BR", { day: "2-digit", timeZone: tz })
+            const startMonth = start.toLocaleDateString("pt-BR", { month: "short", timeZone: tz })
+            const timeLabel = `${start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: tz })} – ${end.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: tz })}`
 
             return (
               <div
@@ -102,10 +102,10 @@ export default async function AgendamentosPage({ searchParams }: Props) {
                   <div className="flex items-start gap-4 min-w-0">
                     <div className="shrink-0 w-14 text-center">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white leading-none">
-                        {start.getDate().toString().padStart(2, "0")}
+                        {startDay}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 capitalize">
-                        {start.toLocaleDateString("pt-BR", { month: "short" })}
+                        {startMonth}
                       </p>
                     </div>
                     <div className="min-w-0">
