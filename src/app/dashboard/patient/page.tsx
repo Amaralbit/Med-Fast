@@ -49,12 +49,20 @@ export default async function PatientDashboard({ searchParams }: Props) {
               className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-5 hover:shadow-md hover:border-blue-200 dark:hover:border-cyan-800 transition-all group"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-                  style={{ background: `linear-gradient(135deg, ${doctor.colorPrimary}, ${doctor.colorAccent})` }}
-                >
-                  {doctor.user.name.charAt(0).toUpperCase()}
-                </div>
+                {doctor.profilePhotoUrl ? (
+                  <img
+                    src={doctor.profilePhotoUrl}
+                    alt={doctor.user.name}
+                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                    style={{ background: `linear-gradient(135deg, ${doctor.colorPrimary}, ${doctor.colorAccent})` }}
+                  >
+                    {doctor.user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
                     {doctor.user.name}

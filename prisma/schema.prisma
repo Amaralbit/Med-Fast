@@ -105,6 +105,8 @@ model DoctorProfile {
   consultationDurationMinutes Int     @default(30)
   pricePrivate                Decimal? @db.Decimal(10, 2)
 
+  profilePhotoUrl String?
+
   colorPrimary String @default("#3B82F6")
   colorAccent  String @default("#06B6D4")
 

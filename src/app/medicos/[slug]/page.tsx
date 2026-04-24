@@ -54,12 +54,20 @@ export default async function DoctorPublicPage({ params }: Props) {
       {/* Hero */}
       <div className="w-full py-16 px-4" style={{ background: `linear-gradient(135deg, ${primary}22 0%, ${accent}22 100%)` }}>
         <div className="max-w-3xl mx-auto flex items-center gap-6">
-          <div
-            className="w-24 h-24 rounded-full flex-shrink-0 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
-            style={{ background: `linear-gradient(135deg, ${primary}, ${accent})` }}
-          >
-            {doctor.user.name.charAt(0).toUpperCase()}
-          </div>
+          {doctor.profilePhotoUrl ? (
+            <img
+              src={doctor.profilePhotoUrl}
+              alt={doctor.user.name}
+              className="w-24 h-24 rounded-full flex-shrink-0 object-cover shadow-lg"
+            />
+          ) : (
+            <div
+              className="w-24 h-24 rounded-full flex-shrink-0 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
+              style={{ background: `linear-gradient(135deg, ${primary}, ${accent})` }}
+            >
+              {doctor.user.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
               {doctor.user.name}

@@ -117,6 +117,7 @@ export const DoctorProfileScalarFieldEnum = {
   whatsapp: 'whatsapp',
   consultationDurationMinutes: 'consultationDurationMinutes',
   pricePrivate: 'pricePrivate',
+  profilePhotoUrl: 'profilePhotoUrl',
   colorPrimary: 'colorPrimary',
   colorAccent: 'colorAccent',
   addressStreet: 'addressStreet',

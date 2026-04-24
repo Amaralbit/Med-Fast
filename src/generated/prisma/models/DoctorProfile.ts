@@ -45,6 +45,7 @@ export type DoctorProfileMinAggregateOutputType = {
   whatsapp: string | null
   consultationDurationMinutes: number | null
   pricePrivate: runtime.Decimal | null
+  profilePhotoUrl: string | null
   colorPrimary: string | null
   colorAccent: string | null
   addressStreet: string | null
@@ -66,6 +67,7 @@ export type DoctorProfileMaxAggregateOutputType = {
   whatsapp: string | null
   consultationDurationMinutes: number | null
   pricePrivate: runtime.Decimal | null
+  profilePhotoUrl: string | null
   colorPrimary: string | null
   colorAccent: string | null
   addressStreet: string | null
@@ -87,6 +89,7 @@ export type DoctorProfileCountAggregateOutputType = {
   whatsapp: number
   consultationDurationMinutes: number
   pricePrivate: number
+  profilePhotoUrl: number
   colorPrimary: number
   colorAccent: number
   addressStreet: number
@@ -120,6 +123,7 @@ export type DoctorProfileMinAggregateInputType = {
   whatsapp?: true
   consultationDurationMinutes?: true
   pricePrivate?: true
+  profilePhotoUrl?: true
   colorPrimary?: true
   colorAccent?: true
   addressStreet?: true
@@ -141,6 +145,7 @@ export type DoctorProfileMaxAggregateInputType = {
   whatsapp?: true
   consultationDurationMinutes?: true
   pricePrivate?: true
+  profilePhotoUrl?: true
   colorPrimary?: true
   colorAccent?: true
   addressStreet?: true
@@ -162,6 +167,7 @@ export type DoctorProfileCountAggregateInputType = {
   whatsapp?: true
   consultationDurationMinutes?: true
   pricePrivate?: true
+  profilePhotoUrl?: true
   colorPrimary?: true
   colorAccent?: true
   addressStreet?: true
@@ -270,6 +276,7 @@ export type DoctorProfileGroupByOutputType = {
   whatsapp: string | null
   consultationDurationMinutes: number
   pricePrivate: runtime.Decimal | null
+  profilePhotoUrl: string | null
   colorPrimary: string
   colorAccent: string
   addressStreet: string | null
@@ -314,6 +321,7 @@ export type DoctorProfileWhereInput = {
   whatsapp?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   consultationDurationMinutes?: Prisma.IntFilter<"DoctorProfile"> | number
   pricePrivate?: Prisma.DecimalNullableFilter<"DoctorProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   colorPrimary?: Prisma.StringFilter<"DoctorProfile"> | string
   colorAccent?: Prisma.StringFilter<"DoctorProfile"> | string
   addressStreet?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
@@ -344,6 +352,7 @@ export type DoctorProfileOrderByWithRelationInput = {
   whatsapp?: Prisma.SortOrderInput | Prisma.SortOrder
   consultationDurationMinutes?: Prisma.SortOrder
   pricePrivate?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePhotoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   colorPrimary?: Prisma.SortOrder
   colorAccent?: Prisma.SortOrder
   addressStreet?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -378,6 +387,7 @@ export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
   whatsapp?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   consultationDurationMinutes?: Prisma.IntFilter<"DoctorProfile"> | number
   pricePrivate?: Prisma.DecimalNullableFilter<"DoctorProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   colorPrimary?: Prisma.StringFilter<"DoctorProfile"> | string
   colorAccent?: Prisma.StringFilter<"DoctorProfile"> | string
   addressStreet?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
@@ -407,6 +417,7 @@ export type DoctorProfileOrderByWithAggregationInput = {
   whatsapp?: Prisma.SortOrderInput | Prisma.SortOrder
   consultationDurationMinutes?: Prisma.SortOrder
   pricePrivate?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePhotoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   colorPrimary?: Prisma.SortOrder
   colorAccent?: Prisma.SortOrder
   addressStreet?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -436,6 +447,7 @@ export type DoctorProfileScalarWhereWithAggregatesInput = {
   whatsapp?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
   consultationDurationMinutes?: Prisma.IntWithAggregatesFilter<"DoctorProfile"> | number
   pricePrivate?: Prisma.DecimalNullableWithAggregatesFilter<"DoctorProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
   colorPrimary?: Prisma.StringWithAggregatesFilter<"DoctorProfile"> | string
   colorAccent?: Prisma.StringWithAggregatesFilter<"DoctorProfile"> | string
   addressStreet?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
@@ -456,6 +468,7 @@ export type DoctorProfileCreateInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -486,6 +499,7 @@ export type DoctorProfileUncheckedCreateInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -514,6 +528,7 @@ export type DoctorProfileUpdateInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -544,6 +559,7 @@ export type DoctorProfileUncheckedUpdateInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -573,6 +589,7 @@ export type DoctorProfileCreateManyInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -593,6 +610,7 @@ export type DoctorProfileUpdateManyMutationInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -614,6 +632,7 @@ export type DoctorProfileUncheckedUpdateManyInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,6 +659,7 @@ export type DoctorProfileCountOrderByAggregateInput = {
   whatsapp?: Prisma.SortOrder
   consultationDurationMinutes?: Prisma.SortOrder
   pricePrivate?: Prisma.SortOrder
+  profilePhotoUrl?: Prisma.SortOrder
   colorPrimary?: Prisma.SortOrder
   colorAccent?: Prisma.SortOrder
   addressStreet?: Prisma.SortOrder
@@ -666,6 +686,7 @@ export type DoctorProfileMaxOrderByAggregateInput = {
   whatsapp?: Prisma.SortOrder
   consultationDurationMinutes?: Prisma.SortOrder
   pricePrivate?: Prisma.SortOrder
+  profilePhotoUrl?: Prisma.SortOrder
   colorPrimary?: Prisma.SortOrder
   colorAccent?: Prisma.SortOrder
   addressStreet?: Prisma.SortOrder
@@ -687,6 +708,7 @@ export type DoctorProfileMinOrderByAggregateInput = {
   whatsapp?: Prisma.SortOrder
   consultationDurationMinutes?: Prisma.SortOrder
   pricePrivate?: Prisma.SortOrder
+  profilePhotoUrl?: Prisma.SortOrder
   colorPrimary?: Prisma.SortOrder
   colorAccent?: Prisma.SortOrder
   addressStreet?: Prisma.SortOrder
@@ -881,6 +903,7 @@ export type DoctorProfileCreateWithoutUserInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -909,6 +932,7 @@ export type DoctorProfileUncheckedCreateWithoutUserInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -953,6 +977,7 @@ export type DoctorProfileUpdateWithoutUserInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -981,6 +1006,7 @@ export type DoctorProfileUncheckedUpdateWithoutUserInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1009,6 +1035,7 @@ export type DoctorProfileCreateWithoutMediaInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1038,6 +1065,7 @@ export type DoctorProfileUncheckedCreateWithoutMediaInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1081,6 +1109,7 @@ export type DoctorProfileUpdateWithoutMediaInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1110,6 +1139,7 @@ export type DoctorProfileUncheckedUpdateWithoutMediaInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1137,6 +1167,7 @@ export type DoctorProfileCreateWithoutHealthPlansInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1166,6 +1197,7 @@ export type DoctorProfileUncheckedCreateWithoutHealthPlansInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1209,6 +1241,7 @@ export type DoctorProfileUpdateWithoutHealthPlansInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1238,6 +1271,7 @@ export type DoctorProfileUncheckedUpdateWithoutHealthPlansInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1265,6 +1299,7 @@ export type DoctorProfileCreateWithoutAvailabilitiesInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1294,6 +1329,7 @@ export type DoctorProfileUncheckedCreateWithoutAvailabilitiesInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1337,6 +1373,7 @@ export type DoctorProfileUpdateWithoutAvailabilitiesInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1366,6 +1403,7 @@ export type DoctorProfileUncheckedUpdateWithoutAvailabilitiesInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1393,6 +1431,7 @@ export type DoctorProfileCreateWithoutBlockedSlotsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1422,6 +1461,7 @@ export type DoctorProfileUncheckedCreateWithoutBlockedSlotsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1465,6 +1505,7 @@ export type DoctorProfileUpdateWithoutBlockedSlotsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1494,6 +1535,7 @@ export type DoctorProfileUncheckedUpdateWithoutBlockedSlotsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1521,6 +1563,7 @@ export type DoctorProfileCreateWithoutAppointmentsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1550,6 +1593,7 @@ export type DoctorProfileUncheckedCreateWithoutAppointmentsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1593,6 +1637,7 @@ export type DoctorProfileUpdateWithoutAppointmentsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1622,6 +1667,7 @@ export type DoctorProfileUncheckedUpdateWithoutAppointmentsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1649,6 +1695,7 @@ export type DoctorProfileCreateWithoutChatQuestionsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1678,6 +1725,7 @@ export type DoctorProfileUncheckedCreateWithoutChatQuestionsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1721,6 +1769,7 @@ export type DoctorProfileUpdateWithoutChatQuestionsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1750,6 +1799,7 @@ export type DoctorProfileUncheckedUpdateWithoutChatQuestionsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1777,6 +1827,7 @@ export type DoctorProfileCreateWithoutConsultationNotesInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1806,6 +1857,7 @@ export type DoctorProfileUncheckedCreateWithoutConsultationNotesInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1849,6 +1901,7 @@ export type DoctorProfileUpdateWithoutConsultationNotesInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1878,6 +1931,7 @@ export type DoctorProfileUncheckedUpdateWithoutConsultationNotesInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1905,6 +1959,7 @@ export type DoctorProfileCreateWithoutMedicalDocumentsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1934,6 +1989,7 @@ export type DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput = {
   whatsapp?: string | null
   consultationDurationMinutes?: number
   pricePrivate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: string | null
   colorPrimary?: string
   colorAccent?: string
   addressStreet?: string | null
@@ -1977,6 +2033,7 @@ export type DoctorProfileUpdateWithoutMedicalDocumentsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2006,6 +2063,7 @@ export type DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput = {
   whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consultationDurationMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   pricePrivate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  profilePhotoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   colorPrimary?: Prisma.StringFieldUpdateOperationsInput | string
   colorAccent?: Prisma.StringFieldUpdateOperationsInput | string
   addressStreet?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2128,6 +2186,7 @@ export type DoctorProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   whatsapp?: boolean
   consultationDurationMinutes?: boolean
   pricePrivate?: boolean
+  profilePhotoUrl?: boolean
   colorPrimary?: boolean
   colorAccent?: boolean
   addressStreet?: boolean
@@ -2159,6 +2218,7 @@ export type DoctorProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   whatsapp?: boolean
   consultationDurationMinutes?: boolean
   pricePrivate?: boolean
+  profilePhotoUrl?: boolean
   colorPrimary?: boolean
   colorAccent?: boolean
   addressStreet?: boolean
@@ -2181,6 +2241,7 @@ export type DoctorProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   whatsapp?: boolean
   consultationDurationMinutes?: boolean
   pricePrivate?: boolean
+  profilePhotoUrl?: boolean
   colorPrimary?: boolean
   colorAccent?: boolean
   addressStreet?: boolean
@@ -2203,6 +2264,7 @@ export type DoctorProfileSelectScalar = {
   whatsapp?: boolean
   consultationDurationMinutes?: boolean
   pricePrivate?: boolean
+  profilePhotoUrl?: boolean
   colorPrimary?: boolean
   colorAccent?: boolean
   addressStreet?: boolean
@@ -2215,7 +2277,7 @@ export type DoctorProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type DoctorProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "crm" | "specialty" | "bio" | "whatsapp" | "consultationDurationMinutes" | "pricePrivate" | "colorPrimary" | "colorAccent" | "addressStreet" | "addressCity" | "addressState" | "addressZip" | "slug" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["doctorProfile"]>
+export type DoctorProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "crm" | "specialty" | "bio" | "whatsapp" | "consultationDurationMinutes" | "pricePrivate" | "profilePhotoUrl" | "colorPrimary" | "colorAccent" | "addressStreet" | "addressCity" | "addressState" | "addressZip" | "slug" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["doctorProfile"]>
 export type DoctorProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.DoctorProfile$mediaArgs<ExtArgs>
@@ -2257,6 +2319,7 @@ export type $DoctorProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     whatsapp: string | null
     consultationDurationMinutes: number
     pricePrivate: runtime.Decimal | null
+    profilePhotoUrl: string | null
     colorPrimary: string
     colorAccent: string
     addressStreet: string | null
@@ -2707,6 +2770,7 @@ export interface DoctorProfileFieldRefs {
   readonly whatsapp: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly consultationDurationMinutes: Prisma.FieldRef<"DoctorProfile", 'Int'>
   readonly pricePrivate: Prisma.FieldRef<"DoctorProfile", 'Decimal'>
+  readonly profilePhotoUrl: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly colorPrimary: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly colorAccent: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly addressStreet: Prisma.FieldRef<"DoctorProfile", 'String'>

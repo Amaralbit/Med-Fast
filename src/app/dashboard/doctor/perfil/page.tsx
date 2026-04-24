@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
 import { ProfileForm } from "./profile-form"
+import { PhotoUpload } from "./photo-upload"
 
 export default async function PerfilPage() {
   const session = await auth()
@@ -9,6 +10,7 @@ export default async function PerfilPage() {
 
   const profile = await prisma.doctorProfile.findUnique({
     where: { userId: session.user.id },
+    include: { user: { select: { name: true } } },
   })
 
   if (!profile) redirect("/dashboard/doctor")
@@ -22,6 +24,7 @@ export default async function PerfilPage() {
         </p>
       </div>
 
+      <PhotoUpload currentPhotoUrl={profile.profilePhotoUrl} doctorName={profile.user.name} />
       <ProfileForm profile={profile} />
     </div>
   )

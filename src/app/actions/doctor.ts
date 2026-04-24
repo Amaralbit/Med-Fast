@@ -4,6 +4,7 @@ import { z } from "zod"
 import { prisma } from "@/server/db"
 import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
+import { put, del } from "@vercel/blob"
 
 const profileSchema = z.object({
   specialty: z.string().min(2, "Informe a especialidade"),
@@ -312,4 +313,37 @@ export async function removeChatQuestion(id: string): Promise<void> {
   })
 
   revalidatePath("/dashboard/doctor/chat-faq")
+}
+
+// ─── Foto de perfil ───────────────────────────────────────────────────────────
+
+export async function uploadProfilePhoto(_: ProfileState, formData: FormData): Promise<ProfileState> {
+  const session = await auth()
+  if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  const file = formData.get("photo") as File | null
+  if (!file || file.size === 0) return { error: "Selecione uma foto" }
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+    return { error: "Apenas JPEG, PNG ou WebP" }
+  if (file.size > 5 * 1024 * 1024) return { error: "Foto muito grande (máx. 5 MB)" }
+
+  const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
+  if (!profile) return { error: "Perfil não encontrado" }
+
+  if (profile.profilePhotoUrl) {
+    try { await del(profile.profilePhotoUrl) } catch { /* já removida */ }
+  }
+
+  const ext = file.name.split(".").pop() ?? "jpg"
+  const blob = await put(`medfast/profiles/${profile.id}/photo-${Date.now()}.${ext}`, file, { access: "public" })
+
+  await prisma.doctorProfile.update({
+    where: { id: profile.id },
+    data: { profilePhotoUrl: blob.url },
+  })
+
+  revalidatePath("/dashboard/doctor/perfil")
+  revalidatePath(`/medicos/${profile.slug}`)
+  revalidatePath("/dashboard/patient")
+  return { success: true }
 }
