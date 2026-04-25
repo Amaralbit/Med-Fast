@@ -126,6 +126,10 @@ export const DoctorProfileScalarFieldEnum = {
   addressZip: 'addressZip',
   slug: 'slug',
   isPublished: 'isPublished',
+  plan: 'plan',
+  stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  planExpiresAt: 'planExpiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -54,6 +54,10 @@ export type DoctorProfileMinAggregateOutputType = {
   addressZip: string | null
   slug: string | null
   isPublished: boolean | null
+  plan: string | null
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +80,10 @@ export type DoctorProfileMaxAggregateOutputType = {
   addressZip: string | null
   slug: string | null
   isPublished: boolean | null
+  plan: string | null
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -98,6 +106,10 @@ export type DoctorProfileCountAggregateOutputType = {
   addressZip: number
   slug: number
   isPublished: number
+  plan: number
+  stripeCustomerId: number
+  stripeSubscriptionId: number
+  planExpiresAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -132,6 +144,10 @@ export type DoctorProfileMinAggregateInputType = {
   addressZip?: true
   slug?: true
   isPublished?: true
+  plan?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -154,6 +170,10 @@ export type DoctorProfileMaxAggregateInputType = {
   addressZip?: true
   slug?: true
   isPublished?: true
+  plan?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -176,6 +196,10 @@ export type DoctorProfileCountAggregateInputType = {
   addressZip?: true
   slug?: true
   isPublished?: true
+  plan?: true
+  stripeCustomerId?: true
+  stripeSubscriptionId?: true
+  planExpiresAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -285,6 +309,10 @@ export type DoctorProfileGroupByOutputType = {
   addressZip: string | null
   slug: string
   isPublished: boolean
+  plan: string
+  stripeCustomerId: string | null
+  stripeSubscriptionId: string | null
+  planExpiresAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: DoctorProfileCountAggregateOutputType | null
@@ -330,6 +358,10 @@ export type DoctorProfileWhereInput = {
   addressZip?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   slug?: Prisma.StringFilter<"DoctorProfile"> | string
   isPublished?: Prisma.BoolFilter<"DoctorProfile"> | boolean
+  plan?: Prisma.StringFilter<"DoctorProfile"> | string
+  stripeCustomerId?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
+  planExpiresAt?: Prisma.DateTimeNullableFilter<"DoctorProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DoctorProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DoctorProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -361,6 +393,10 @@ export type DoctorProfileOrderByWithRelationInput = {
   addressZip?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -379,6 +415,8 @@ export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
   userId?: string
   crm?: string
   slug?: string
+  stripeCustomerId?: string
+  stripeSubscriptionId?: string
   AND?: Prisma.DoctorProfileWhereInput | Prisma.DoctorProfileWhereInput[]
   OR?: Prisma.DoctorProfileWhereInput[]
   NOT?: Prisma.DoctorProfileWhereInput | Prisma.DoctorProfileWhereInput[]
@@ -395,6 +433,8 @@ export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
   addressState?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   addressZip?: Prisma.StringNullableFilter<"DoctorProfile"> | string | null
   isPublished?: Prisma.BoolFilter<"DoctorProfile"> | boolean
+  plan?: Prisma.StringFilter<"DoctorProfile"> | string
+  planExpiresAt?: Prisma.DateTimeNullableFilter<"DoctorProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DoctorProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DoctorProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -406,7 +446,7 @@ export type DoctorProfileWhereUniqueInput = Prisma.AtLeast<{
   chatQuestions?: Prisma.ChatQuestionListRelationFilter
   medicalDocuments?: Prisma.MedicalDocumentListRelationFilter
   consultationNotes?: Prisma.ConsultationNoteListRelationFilter
-}, "id" | "userId" | "crm" | "slug">
+}, "id" | "userId" | "crm" | "slug" | "stripeCustomerId" | "stripeSubscriptionId">
 
 export type DoctorProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -426,6 +466,10 @@ export type DoctorProfileOrderByWithAggregationInput = {
   addressZip?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DoctorProfileCountOrderByAggregateInput
@@ -456,6 +500,10 @@ export type DoctorProfileScalarWhereWithAggregatesInput = {
   addressZip?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
   slug?: Prisma.StringWithAggregatesFilter<"DoctorProfile"> | string
   isPublished?: Prisma.BoolWithAggregatesFilter<"DoctorProfile"> | boolean
+  plan?: Prisma.StringWithAggregatesFilter<"DoctorProfile"> | string
+  stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
+  stripeSubscriptionId?: Prisma.StringNullableWithAggregatesFilter<"DoctorProfile"> | string | null
+  planExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DoctorProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DoctorProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DoctorProfile"> | Date | string
 }
@@ -477,6 +525,10 @@ export type DoctorProfileCreateInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -508,6 +560,10 @@ export type DoctorProfileUncheckedCreateInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -537,6 +593,10 @@ export type DoctorProfileUpdateInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -568,6 +628,10 @@ export type DoctorProfileUncheckedUpdateInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -598,6 +662,10 @@ export type DoctorProfileCreateManyInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -619,6 +687,10 @@ export type DoctorProfileUpdateManyMutationInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -641,6 +713,10 @@ export type DoctorProfileUncheckedUpdateManyInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -668,6 +744,10 @@ export type DoctorProfileCountOrderByAggregateInput = {
   addressZip?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -695,6 +775,10 @@ export type DoctorProfileMaxOrderByAggregateInput = {
   addressZip?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -717,6 +801,10 @@ export type DoctorProfileMinOrderByAggregateInput = {
   addressZip?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  stripeSubscriptionId?: Prisma.SortOrder
+  planExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -912,6 +1000,10 @@ export type DoctorProfileCreateWithoutUserInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaCreateNestedManyWithoutDoctorProfileInput
@@ -941,6 +1033,10 @@ export type DoctorProfileUncheckedCreateWithoutUserInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -986,6 +1082,10 @@ export type DoctorProfileUpdateWithoutUserInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUpdateManyWithoutDoctorProfileNestedInput
@@ -1015,6 +1115,10 @@ export type DoctorProfileUncheckedUpdateWithoutUserInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1044,6 +1148,10 @@ export type DoctorProfileCreateWithoutMediaInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1074,6 +1182,10 @@ export type DoctorProfileUncheckedCreateWithoutMediaInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   healthPlans?: Prisma.DoctorHealthPlanUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1118,6 +1230,10 @@ export type DoctorProfileUpdateWithoutMediaInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1148,6 +1264,10 @@ export type DoctorProfileUncheckedUpdateWithoutMediaInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   healthPlans?: Prisma.DoctorHealthPlanUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1176,6 +1296,10 @@ export type DoctorProfileCreateWithoutHealthPlansInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1206,6 +1330,10 @@ export type DoctorProfileUncheckedCreateWithoutHealthPlansInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1250,6 +1378,10 @@ export type DoctorProfileUpdateWithoutHealthPlansInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1280,6 +1412,10 @@ export type DoctorProfileUncheckedUpdateWithoutHealthPlansInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1308,6 +1444,10 @@ export type DoctorProfileCreateWithoutAvailabilitiesInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1338,6 +1478,10 @@ export type DoctorProfileUncheckedCreateWithoutAvailabilitiesInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1382,6 +1526,10 @@ export type DoctorProfileUpdateWithoutAvailabilitiesInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1412,6 +1560,10 @@ export type DoctorProfileUncheckedUpdateWithoutAvailabilitiesInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1440,6 +1592,10 @@ export type DoctorProfileCreateWithoutBlockedSlotsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1470,6 +1626,10 @@ export type DoctorProfileUncheckedCreateWithoutBlockedSlotsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1514,6 +1674,10 @@ export type DoctorProfileUpdateWithoutBlockedSlotsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1544,6 +1708,10 @@ export type DoctorProfileUncheckedUpdateWithoutBlockedSlotsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1572,6 +1740,10 @@ export type DoctorProfileCreateWithoutAppointmentsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1602,6 +1774,10 @@ export type DoctorProfileUncheckedCreateWithoutAppointmentsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1646,6 +1822,10 @@ export type DoctorProfileUpdateWithoutAppointmentsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1676,6 +1856,10 @@ export type DoctorProfileUncheckedUpdateWithoutAppointmentsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1704,6 +1888,10 @@ export type DoctorProfileCreateWithoutChatQuestionsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1734,6 +1922,10 @@ export type DoctorProfileUncheckedCreateWithoutChatQuestionsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1778,6 +1970,10 @@ export type DoctorProfileUpdateWithoutChatQuestionsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1808,6 +2004,10 @@ export type DoctorProfileUncheckedUpdateWithoutChatQuestionsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1836,6 +2036,10 @@ export type DoctorProfileCreateWithoutConsultationNotesInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1866,6 +2070,10 @@ export type DoctorProfileUncheckedCreateWithoutConsultationNotesInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -1910,6 +2118,10 @@ export type DoctorProfileUpdateWithoutConsultationNotesInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -1940,6 +2152,10 @@ export type DoctorProfileUncheckedUpdateWithoutConsultationNotesInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -1968,6 +2184,10 @@ export type DoctorProfileCreateWithoutMedicalDocumentsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutDoctorProfileInput
@@ -1998,6 +2218,10 @@ export type DoctorProfileUncheckedCreateWithoutMedicalDocumentsInput = {
   addressZip?: string | null
   slug: string
   isPublished?: boolean
+  plan?: string
+  stripeCustomerId?: string | null
+  stripeSubscriptionId?: string | null
+  planExpiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   media?: Prisma.DoctorMediaUncheckedCreateNestedManyWithoutDoctorProfileInput
@@ -2042,6 +2266,10 @@ export type DoctorProfileUpdateWithoutMedicalDocumentsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutDoctorProfileNestedInput
@@ -2072,6 +2300,10 @@ export type DoctorProfileUncheckedUpdateWithoutMedicalDocumentsInput = {
   addressZip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeSubscriptionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  planExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   media?: Prisma.DoctorMediaUncheckedUpdateManyWithoutDoctorProfileNestedInput
@@ -2195,6 +2427,10 @@ export type DoctorProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   addressZip?: boolean
   slug?: boolean
   isPublished?: boolean
+  plan?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2227,6 +2463,10 @@ export type DoctorProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   addressZip?: boolean
   slug?: boolean
   isPublished?: boolean
+  plan?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2250,6 +2490,10 @@ export type DoctorProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   addressZip?: boolean
   slug?: boolean
   isPublished?: boolean
+  plan?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2273,11 +2517,15 @@ export type DoctorProfileSelectScalar = {
   addressZip?: boolean
   slug?: boolean
   isPublished?: boolean
+  plan?: boolean
+  stripeCustomerId?: boolean
+  stripeSubscriptionId?: boolean
+  planExpiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DoctorProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "crm" | "specialty" | "bio" | "whatsapp" | "consultationDurationMinutes" | "pricePrivate" | "profilePhotoUrl" | "colorPrimary" | "colorAccent" | "addressStreet" | "addressCity" | "addressState" | "addressZip" | "slug" | "isPublished" | "createdAt" | "updatedAt", ExtArgs["result"]["doctorProfile"]>
+export type DoctorProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "crm" | "specialty" | "bio" | "whatsapp" | "consultationDurationMinutes" | "pricePrivate" | "profilePhotoUrl" | "colorPrimary" | "colorAccent" | "addressStreet" | "addressCity" | "addressState" | "addressZip" | "slug" | "isPublished" | "plan" | "stripeCustomerId" | "stripeSubscriptionId" | "planExpiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["doctorProfile"]>
 export type DoctorProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   media?: boolean | Prisma.DoctorProfile$mediaArgs<ExtArgs>
@@ -2328,6 +2576,10 @@ export type $DoctorProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     addressZip: string | null
     slug: string
     isPublished: boolean
+    plan: string
+    stripeCustomerId: string | null
+    stripeSubscriptionId: string | null
+    planExpiresAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["doctorProfile"]>
@@ -2779,6 +3031,10 @@ export interface DoctorProfileFieldRefs {
   readonly addressZip: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly slug: Prisma.FieldRef<"DoctorProfile", 'String'>
   readonly isPublished: Prisma.FieldRef<"DoctorProfile", 'Boolean'>
+  readonly plan: Prisma.FieldRef<"DoctorProfile", 'String'>
+  readonly stripeCustomerId: Prisma.FieldRef<"DoctorProfile", 'String'>
+  readonly stripeSubscriptionId: Prisma.FieldRef<"DoctorProfile", 'String'>
+  readonly planExpiresAt: Prisma.FieldRef<"DoctorProfile", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"DoctorProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DoctorProfile", 'DateTime'>
 }
