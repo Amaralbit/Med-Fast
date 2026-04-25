@@ -4,6 +4,7 @@ import Anthropic from "@anthropic-ai/sdk"
 import { getAvailableSlots } from "@/lib/slots"
 import { sendNewAppointmentToDoctor } from "@/lib/email"
 import { checkRateLimit } from "@/lib/rate-limit"
+import { hasAiChat } from "@/lib/plan"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -124,6 +125,10 @@ export async function POST(req: Request) {
   })
 
   if (!doctor) return Response.json({ error: "Médico não encontrado" }, { status: 404 })
+
+  if (!hasAiChat(doctor.plan)) {
+    return Response.json({ error: "Chat com IA não disponível neste plano." }, { status: 403 })
+  }
 
   const system = `Você é a secretária virtual do(a) Dr(a). ${doctor.user.name}${doctor.specialty ? `, especialista em ${doctor.specialty}` : ""}. Ajude pacientes a agendar consultas de forma amigável e profissional. Responda sempre em português brasileiro. Seja concisa.
 

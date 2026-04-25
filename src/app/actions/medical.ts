@@ -5,6 +5,7 @@ import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import { put, del } from "@vercel/blob"
 import { sendDocumentUploadedToPatient } from "@/lib/email"
+import { canUploadDocuments } from "@/lib/plan"
 
 export type MedicalState = { error?: string; success?: boolean }
 
@@ -81,6 +82,10 @@ export async function uploadMedicalDocument(_: MedicalState, formData: FormData)
     include: { user: { select: { name: true } } },
   })
   if (!profile) return { error: "Perfil não encontrado" }
+
+  if (!canUploadDocuments(profile.plan)) {
+    return { error: "Upload de documentos disponível nos planos Pro e Clínica. Faça upgrade em Plano e Cobrança." }
+  }
 
   const appt = await prisma.appointment.findFirst({
     where: { id: appointmentId, doctorProfileId: profile.id },

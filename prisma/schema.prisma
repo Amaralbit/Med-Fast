@@ -118,6 +118,11 @@ model DoctorProfile {
   slug        String  @unique
   isPublished Boolean @default(false)
 
+  plan                 String   @default("FREE")
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  planExpiresAt        DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

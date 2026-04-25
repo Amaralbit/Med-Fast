@@ -3,7 +3,9 @@ import { auth } from "@/auth"
 import { notFound } from "next/navigation"
 import { MapPin, Clock, CreditCard, Phone, Calendar } from "lucide-react"
 import { ChatWidget } from "./chat-widget"
+import { AiChatWidget } from "./ai-chat-widget"
 import { BookingWidget } from "./booking-widget"
+import { hasAiChat } from "@/lib/plan"
 
 const DAY_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
@@ -207,13 +209,22 @@ export default async function DoctorPublicPage({ params }: Props) {
         )}
       </div>
 
-      {/* Floating chat widget */}
-      <ChatWidget
-        colorPrimary={primary}
-        doctorName={doctor.user.name}
-        whatsapp={doctor.whatsapp}
-        questions={doctor.chatQuestions}
-      />
+      {/* Floating chat widget — AI for PRO/CLINIC, static FAQ for FREE */}
+      {hasAiChat(doctor.plan) ? (
+        <AiChatWidget
+          colorPrimary={primary}
+          doctorName={doctor.user.name}
+          doctorSlug={doctor.slug}
+          whatsapp={doctor.whatsapp}
+        />
+      ) : (
+        <ChatWidget
+          colorPrimary={primary}
+          doctorName={doctor.user.name}
+          whatsapp={doctor.whatsapp}
+          questions={doctor.chatQuestions}
+        />
+      )}
     </div>
   )
 }

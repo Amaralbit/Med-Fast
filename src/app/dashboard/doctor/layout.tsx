@@ -1,7 +1,7 @@
 import { auth, signOut } from "@/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, User, Calendar, HeartPulse, LogOut, ClipboardList, CalendarDays, MessageCircle } from "lucide-react"
+import { LayoutDashboard, User, Calendar, HeartPulse, LogOut, ClipboardList, CalendarDays, MessageCircle, CreditCard } from "lucide-react"
 
 const navItems = [
   { href: "/dashboard/doctor", label: "Visão Geral", icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard/doctor/disponibilidade", label: "Disponibilidade", icon: Calendar },
   { href: "/dashboard/doctor/convenios", label: "Convênios", icon: HeartPulse },
   { href: "/dashboard/doctor/chat-faq", label: "Chat FAQ", icon: MessageCircle },
+  { href: "/dashboard/doctor/billing", label: "Plano e Cobrança", icon: CreditCard },
 ]
 
 export default async function DoctorLayout({ children }: { children: React.ReactNode }) {
