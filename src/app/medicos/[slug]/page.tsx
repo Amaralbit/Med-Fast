@@ -216,6 +216,7 @@ export default async function DoctorPublicPage({ params }: Props) {
           doctorName={doctor.user.name}
           doctorSlug={doctor.slug}
           whatsapp={doctor.whatsapp}
+          questions={doctor.chatQuestions}
         />
       ) : (
         <ChatWidget

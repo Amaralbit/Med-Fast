@@ -4,17 +4,19 @@ import { useState, useRef, useEffect } from "react"
 import { MessageCircle, X, Phone, Send, Loader2 } from "lucide-react"
 
 type Message = { from: "bot" | "user"; text: string }
+type Question = { id: string; question: string; answer: string }
 
 type Props = {
   colorPrimary: string
   doctorName: string
   doctorSlug: string
   whatsapp: string | null
+  questions: Question[]
 }
 
 const MAX_HISTORY = 20
 
-export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp }: Props) {
+export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, questions }: Props) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -78,6 +80,15 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp }:
       e.preventDefault()
       handleSend()
     }
+  }
+
+  function handleFaqClick(q: Question) {
+    if (loading) return
+    setMessages((prev) => [
+      ...prev,
+      { from: "user", text: q.question },
+      { from: "bot", text: q.answer },
+    ])
   }
 
   return (
@@ -164,19 +175,49 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp }:
               </div>
             )}
 
-            {/* WhatsApp link */}
-            {whatsapp && (
-              <div className="px-3 py-2 border-t border-gray-100 dark:border-zinc-800 shrink-0">
-                <a
-                  href={`https://wa.me/${whatsapp}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl text-white font-medium transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: "#25D366" }}
-                >
-                  <Phone size={12} />
-                  Falar pelo WhatsApp
-                </a>
+            {/* FAQ quick-reply buttons + WhatsApp */}
+            {(questions.length > 0 || whatsapp) && (
+              <div className="px-3 py-2.5 border-t border-gray-100 dark:border-zinc-800 space-y-1.5 shrink-0">
+                {questions.length > 0 && (
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium px-1">
+                    Perguntas frequentes:
+                  </p>
+                )}
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {questions.map((q) => (
+                    <button
+                      key={q.id}
+                      onClick={() => handleFaqClick(q)}
+                      disabled={loading}
+                      className="w-full text-left text-xs px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-300 hover:text-white transition-all disabled:opacity-50"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = colorPrimary
+                        e.currentTarget.style.borderColor = colorPrimary
+                        e.currentTarget.style.color = "#fff"
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = ""
+                        e.currentTarget.style.borderColor = ""
+                        e.currentTarget.style.color = ""
+                      }}
+                    >
+                      {q.question}
+                    </button>
+                  ))}
+
+                  {whatsapp && (
+                    <a
+                      href={`https://wa.me/${whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl text-white font-medium transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: "#25D366" }}
+                    >
+                      <Phone size={12} />
+                      Falar pelo WhatsApp
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 
