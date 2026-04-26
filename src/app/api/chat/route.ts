@@ -5,7 +5,7 @@ import type { Tool } from "@google/genai"
 import { getAvailableSlots } from "@/lib/slots"
 import { sendNewAppointmentToDoctor } from "@/lib/email"
 import { checkRateLimit } from "@/lib/rate-limit"
-import { hasAiChat } from "@/lib/plan"
+import { hasAiChat, PLAN_LIMITS } from "@/lib/plan"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -154,6 +154,18 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
 
       const endAt = new Date(startAt.getTime() + doctor.consultationDurationMinutes * 60 * 1000)
       const notes = typeof args.notes === "string" ? args.notes.trim().slice(0, NOTES_MAX) || null : null
+
+      const plan = (doctor.plan ?? "FREE") as keyof typeof PLAN_LIMITS
+      const monthCap = PLAN_LIMITS[plan].maxAppointmentsPerMonth
+      if (isFinite(monthCap)) {
+        const startOfMonth = new Date()
+        startOfMonth.setDate(1)
+        startOfMonth.setHours(0, 0, 0, 0)
+        const count = await prisma.appointment.count({
+          where: { doctorProfileId: doctor.id, startAt: { gte: startOfMonth }, status: { notIn: ["CANCELLED"] } },
+        })
+        if (count >= monthCap) return JSON.stringify({ error: "MONTHLY_LIMIT_REACHED" })
+      }
 
       const conflict = await prisma.appointment.findFirst({
         where: {

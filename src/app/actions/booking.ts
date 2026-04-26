@@ -4,6 +4,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/rate-limit"
+import { PLAN_LIMITS } from "@/lib/plan"
 
 export type SlotTime = { startAt: string; endAt: string; label: string }
 
@@ -105,6 +106,25 @@ export async function bookAppointment(
   // 10 bookings per hour per patient — prevents booking-spam
   const rl = checkRateLimit(`book:${patientProfile.id}`, 10, 60 * 60 * 1000)
   if (!rl.allowed) return { error: "Muitas solicitações. Aguarde um momento." }
+
+  // Enforce monthly appointment cap for FREE plan
+  const doctor = await prisma.doctorProfile.findUnique({
+    where: { id: doctorProfileId },
+    select: { plan: true },
+  })
+  const plan = (doctor?.plan ?? "FREE") as keyof typeof PLAN_LIMITS
+  const monthCap = PLAN_LIMITS[plan].maxAppointmentsPerMonth
+  if (isFinite(monthCap)) {
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+    const count = await prisma.appointment.count({
+      where: { doctorProfileId, startAt: { gte: startOfMonth }, status: { notIn: ["CANCELLED"] } },
+    })
+    if (count >= monthCap) {
+      return { error: "Este médico atingiu o limite de agendamentos do mês. Tente contato pelo WhatsApp." }
+    }
+  }
 
   // Validate and sanitize notes
   const sanitizedNotes = notes?.trim().slice(0, NOTES_MAX_LENGTH) || null
