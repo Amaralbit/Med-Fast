@@ -84,11 +84,12 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
 
   function handleFaqClick(q: Question) {
     if (loading) return
-    setMessages((prev) => [
-      ...prev,
-      { from: "user", text: q.question },
-      { from: "bot", text: q.answer },
-    ])
+    setMessages((prev) => [...prev, { from: "user", text: q.question }])
+    setLoading(true)
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { from: "bot", text: q.answer }])
+      setLoading(false)
+    }, 800 + Math.random() * 600)
   }
 
   return (
