@@ -203,7 +203,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
 
   for (let i = 0; i < 5; i++) {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-04-17",
+      model: "gemini-2.0-flash",
       contents,
       config: { systemInstruction, tools: TOOLS },
     })
