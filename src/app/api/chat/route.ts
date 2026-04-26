@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1"
-  const rl = checkRateLimit(`chat:${ip}`, 20, 60 * 1000)
+  const rl = checkRateLimit(`chat:${ip}`, 8, 60 * 1000)
   if (!rl.allowed) {
     return Response.json(
       { error: "Muitas requisições. Aguarde um momento." },
