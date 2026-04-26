@@ -201,34 +201,43 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
 
   let requiresAuth = false
 
-  for (let i = 0; i < 5; i++) {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents,
-      config: { systemInstruction, tools: TOOLS },
-    })
-
-    const parts = response.candidates?.[0]?.content?.parts ?? []
-    const functionCallParts = parts.filter((p) => p.functionCall)
-    const textParts = parts.filter((p) => p.text)
-
-    if (functionCallParts.length === 0) {
-      const text = textParts.map((p) => p.text ?? "").join("")
-      return Response.json({ message: text, requiresAuth })
-    }
-
-    contents.push({ role: "model", parts })
-
-    const functionResponses = await Promise.all(
-      functionCallParts.map(async (part) => {
-        const { name, args } = part.functionCall!
-        const result = await processToolCall(name ?? "", (args ?? {}) as Record<string, unknown>)
-        if (result.includes("NOT_AUTHENTICATED")) requiresAuth = true
-        return { functionResponse: { name: name ?? "", response: { result } } }
+  try {
+    for (let i = 0; i < 5; i++) {
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents,
+        config: { systemInstruction, tools: TOOLS },
       })
-    )
 
-    contents.push({ role: "user", parts: functionResponses })
+      const parts = response.candidates?.[0]?.content?.parts ?? []
+      const functionCallParts = parts.filter((p) => p.functionCall)
+      const textParts = parts.filter((p) => p.text)
+
+      if (functionCallParts.length === 0) {
+        const text = textParts.map((p) => p.text ?? "").join("")
+        return Response.json({ message: text, requiresAuth })
+      }
+
+      contents.push({ role: "model", parts })
+
+      const functionResponses = await Promise.all(
+        functionCallParts.map(async (part) => {
+          const { name, args } = part.functionCall!
+          const result = await processToolCall(name ?? "", (args ?? {}) as Record<string, unknown>)
+          if (result.includes("NOT_AUTHENTICATED")) requiresAuth = true
+          return { functionResponse: { name: name ?? "", response: { result } } }
+        })
+      )
+
+      contents.push({ role: "user", parts: functionResponses })
+    }
+  } catch (err: unknown) {
+    const status = (err as { status?: number })?.status
+    if (status === 429) {
+      return Response.json({ message: "Muitas mensagens em pouco tempo. Aguarde um momento e tente novamente.", requiresAuth })
+    }
+    console.error("[chat]", err)
+    return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth })
   }
 
   return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth })
