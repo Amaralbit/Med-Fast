@@ -112,7 +112,7 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp }:
                 </div>
                 <div>
                   <p className="font-semibold text-sm">Secretária Virtual IA</p>
-                  <p className="text-xs opacity-75">Powered by Claude</p>
+                  <p className="text-xs opacity-75">Powered by Gemini</p>
                 </div>
               </div>
               <button
