@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs"
 import { headers } from "next/headers"
 import type { Role } from "@/generated/prisma/client"
 import { prisma } from "@/server/db"
-import { signIn } from "@/auth"
+import { signIn, signOut } from "@/auth"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
 import { checkRateLimit } from "@/lib/rate-limit"
@@ -109,4 +109,9 @@ export async function login(_: AuthState, formData: FormData): Promise<AuthState
 
   const user = email ? await prisma.user.findUnique({ where: { email }, select: { role: true } }) : null
   redirect(user?.role === "DOCTOR" ? "/dashboard/doctor" : "/dashboard/patient")
+}
+
+export async function signOutAction() {
+  await signOut({ redirect: false })
+  redirect("/login")
 }
