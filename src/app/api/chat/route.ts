@@ -18,9 +18,22 @@ const SLUG_RE = /^[a-z0-9-]+$/
 const MAX_MESSAGES = 50
 const MAX_MESSAGE_CHARS = 10_000
 
+function normalizeApiKey(raw: string | undefined) {
+  if (!raw) return null
+  const trimmed = raw.trim()
+  const unquoted =
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+      ? trimmed.slice(1, -1).trim()
+      : trimmed
+
+  return unquoted.length > 0 ? unquoted : null
+}
+
 function getGemini() {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured")
+  const apiKey = normalizeApiKey(process.env.GEMINI_API_KEY) ?? normalizeApiKey(process.env.GOOGLE_API_KEY)
+  if (!apiKey) throw new Error("Gemini API key is not configured")
   return new GoogleGenAI({ apiKey })
 }
 
@@ -242,7 +255,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
   try {
     for (let i = 0; i < 5; i++) {
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents,
         config: { systemInstruction, tools: TOOLS },
       })
@@ -271,12 +284,23 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
     }
   } catch (err: unknown) {
     const status = (err as { status?: number })?.status
+    const message = err instanceof Error ? err.message : String(err)
     if (status === 429) {
       return Response.json({ message: "Muitas mensagens em pouco tempo. Aguarde um momento e tente novamente.", requiresAuth })
     }
+    if (
+      message.includes("Gemini API key is not configured") ||
+      message.includes("API key should be set") ||
+      (status === 403 && message.includes("unregistered callers"))
+    ) {
+      return Response.json(
+        { message: "O chat com IA está temporariamente indisponível por configuração da chave do Gemini.", requiresAuth },
+        { status: 503 }
+      )
+    }
     console.error("[chat]", err)
-    return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth })
+    return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth }, { status: 500 })
   }
 
-  return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth })
+  return Response.json({ message: "Desculpe, ocorreu um erro. Tente novamente.", requiresAuth }, { status: 500 })
 }
