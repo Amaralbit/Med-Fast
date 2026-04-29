@@ -1,9 +1,11 @@
+import "server-only"
+
 import crypto from "node:crypto"
 import { cookies, headers } from "next/headers"
-
-export const ACTION_TOKEN_FIELD = "__action_token"
-export const ACTION_TOKEN_HEADER = "x-action-token"
-export const ACTION_TOKEN_COOKIE = "medfast_action_secret"
+import {
+  ACTION_TOKEN_COOKIE,
+  getActionTokenValue,
+} from "@/lib/security/form-protection-shared"
 
 type UsedEntry = { expiresAt: number }
 const usedTokens = new Map<string, UsedEntry>()
@@ -109,6 +111,4 @@ export async function verifyActionToken(
   }
 }
 
-export function getActionTokenValue(formData: FormData) {
-  return formData.get(ACTION_TOKEN_FIELD)?.toString()
-}
+export { getActionTokenValue }

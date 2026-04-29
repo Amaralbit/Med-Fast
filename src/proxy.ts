@@ -2,7 +2,7 @@ import crypto from "node:crypto"
 import NextAuth from "next-auth"
 import { authConfig } from "@/auth.config"
 import { NextResponse } from "next/server"
-import { ACTION_TOKEN_COOKIE } from "@/lib/security/form-protection"
+import { ACTION_TOKEN_COOKIE } from "@/lib/security/form-protection-shared"
 
 const { auth } = NextAuth(authConfig)
 
