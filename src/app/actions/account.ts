@@ -3,10 +3,17 @@
 import { auth, signOut } from "@/auth"
 import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
+import { verifyActionToken } from "@/lib/security/form-protection"
 
-export async function deleteAccount(): Promise<{ error?: string }> {
+export async function deleteAccount(actionToken: string): Promise<{ error?: string }> {
   const session = await auth()
   if (!session) return { error: "Não autenticado" }
+
+  try {
+    await verifyActionToken(actionToken, "account:delete", session.user.id, 2 * 60 * 60 * 1000, true)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
 
   const userId = session.user.id
 
@@ -15,7 +22,6 @@ export async function deleteAccount(): Promise<{ error?: string }> {
       if (session.user.role === "DOCTOR") {
         const profile = await tx.doctorProfile.findUnique({ where: { userId }, select: { id: true } })
         if (profile) {
-          // Delete in order: docs and notes reference appointments without cascade
           await tx.medicalDocument.deleteMany({ where: { doctorProfileId: profile.id } })
           await tx.consultationNote.deleteMany({ where: { doctorProfileId: profile.id } })
           await tx.appointment.deleteMany({ where: { doctorProfileId: profile.id } })
@@ -29,8 +35,6 @@ export async function deleteAccount(): Promise<{ error?: string }> {
         }
       }
 
-      // User delete cascades: profile, notifications, weekly availabilities,
-      // blocked slots, chat questions, media, health plans
       await tx.user.delete({ where: { id: userId } })
     })
   } catch (err) {

@@ -3,9 +3,10 @@
 import { useActionState, useTransition } from "react"
 import { uploadMedicalDocument, deleteMedicalDocument } from "@/app/actions/medical"
 import { FileText, Download, Trash2, Plus } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
-type Doc = { id: string; type: string; title: string; fileUrl: string; createdAt: Date }
-type Props = { appointmentId: string; documents: Doc[] }
+type Doc = { id: string; type: string; title: string; fileUrl: string; createdAt: Date; deleteActionToken: string }
+type Props = { appointmentId: string; documents: Doc[]; uploadActionToken: string }
 
 const tz = "America/Sao_Paulo"
 const DOC_LABEL: Record<string, string> = { PRESCRIPTION: "Receita", CERTIFICATE: "Atestado", OTHER: "Documento" }
@@ -14,7 +15,7 @@ function fmtDate(d: Date) {
   return new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: tz })
 }
 
-export function DocumentSection({ appointmentId, documents }: Props) {
+export function DocumentSection({ appointmentId, documents, uploadActionToken }: Props) {
   const [state, formAction, pending] = useActionState(uploadMedicalDocument, {})
   const [, startTransition] = useTransition()
 
@@ -50,7 +51,7 @@ export function DocumentSection({ appointmentId, documents }: Props) {
                   <Download size={15} />
                 </a>
                 <button
-                  onClick={() => startTransition(async () => { await deleteMedicalDocument(doc.id) })}
+                  onClick={() => startTransition(async () => { await deleteMedicalDocument(doc.id, doc.deleteActionToken) })}
                   title="Remover"
                   className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                 >
@@ -70,6 +71,7 @@ export function DocumentSection({ appointmentId, documents }: Props) {
         </p>
 
         <form action={formAction} className="space-y-3">
+          <ActionTokenInput token={uploadActionToken} />
           <input type="hidden" name="appointmentId" value={appointmentId} />
 
           <div className="grid grid-cols-2 gap-3">

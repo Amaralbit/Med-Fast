@@ -4,6 +4,8 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { confirmAppointment, cancelAppointment, completeAppointment } from "@/app/actions/doctor"
 import { Check, X, CheckCheck, Clock, CalendarX, ArrowRight } from "lucide-react"
+import { createActionToken } from "@/lib/security/form-protection"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 type AppointmentStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW"
 
@@ -44,6 +46,14 @@ export default async function AgendamentosPage({ searchParams }: Props) {
     },
     orderBy: { startAt: activeTab.key === "upcoming" ? "asc" : "desc" },
   })
+  const appointmentsWithTokens = await Promise.all(
+    appointments.map(async (appt) => ({
+      ...appt,
+      confirmActionToken: await createActionToken("doctor:confirm-appointment", session.user.id),
+      cancelActionToken: await createActionToken("doctor:cancel-appointment", session.user.id),
+      completeActionToken: await createActionToken("doctor:complete-appointment", session.user.id),
+    }))
+  )
 
   return (
     <div className="p-8 max-w-4xl">
@@ -81,7 +91,7 @@ export default async function AgendamentosPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="space-y-3">
-          {appointments.map((appt) => {
+          {appointmentsWithTokens.map((appt) => {
             const status = appt.status as AppointmentStatus
             const cfg = STATUS_CONFIG[status]
             const patient = appt.patientProfile.user
@@ -141,7 +151,9 @@ export default async function AgendamentosPage({ searchParams }: Props) {
 
                     {status === "PENDING" && (
                       <div className="flex gap-1.5">
-                        <form action={async () => { "use server"; await confirmAppointment(appt.id) }}>
+                        <form action={confirmAppointment}>
+                          <input type="hidden" name="appointmentId" value={appt.id} />
+                          <ActionTokenInput token={appt.confirmActionToken} />
                           <button
                             type="submit"
                             title="Confirmar"
@@ -150,7 +162,9 @@ export default async function AgendamentosPage({ searchParams }: Props) {
                             <Check size={16} />
                           </button>
                         </form>
-                        <form action={async () => { "use server"; await cancelAppointment(appt.id) }}>
+                        <form action={cancelAppointment}>
+                          <input type="hidden" name="appointmentId" value={appt.id} />
+                          <ActionTokenInput token={appt.cancelActionToken} />
                           <button
                             type="submit"
                             title="Cancelar"
@@ -164,7 +178,9 @@ export default async function AgendamentosPage({ searchParams }: Props) {
 
                     {status === "CONFIRMED" && (
                       <div className="flex gap-1.5">
-                        <form action={async () => { "use server"; await completeAppointment(appt.id) }}>
+                        <form action={completeAppointment}>
+                          <input type="hidden" name="appointmentId" value={appt.id} />
+                          <ActionTokenInput token={appt.completeActionToken} />
                           <button
                             type="submit"
                             title="Marcar como concluída"
@@ -173,7 +189,9 @@ export default async function AgendamentosPage({ searchParams }: Props) {
                             <CheckCheck size={16} />
                           </button>
                         </form>
-                        <form action={async () => { "use server"; await cancelAppointment(appt.id) }}>
+                        <form action={cancelAppointment}>
+                          <input type="hidden" name="appointmentId" value={appt.id} />
+                          <ActionTokenInput token={appt.cancelActionToken} />
                           <button
                             type="submit"
                             title="Cancelar"

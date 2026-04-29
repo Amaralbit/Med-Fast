@@ -3,6 +3,7 @@ import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
 import { AvailabilityManager } from "./availability-manager"
 import { BlockedSlotManager } from "./blocked-slot-manager"
+import { createActionToken } from "@/lib/security/form-protection"
 
 export default async function DisponibilidadePage() {
   const session = await auth()
@@ -18,6 +19,23 @@ export default async function DisponibilidadePage() {
 
   if (!profile) redirect("/dashboard/doctor")
 
+  const [availabilityCreateToken, blockedCreateToken] = await Promise.all([
+    createActionToken("doctor:add-availability", session.user.id),
+    createActionToken("doctor:add-blocked-slot", session.user.id),
+  ])
+  const availabilities = await Promise.all(
+    profile.availabilities.map(async (av) => ({
+      ...av,
+      removeActionToken: await createActionToken("doctor:remove-availability", session.user.id),
+    }))
+  )
+  const blockedSlots = await Promise.all(
+    profile.blockedSlots.map(async (slot) => ({
+      ...slot,
+      removeActionToken: await createActionToken("doctor:remove-blocked-slot", session.user.id),
+    }))
+  )
+
   return (
     <div className="p-8 max-w-3xl space-y-12">
       <div>
@@ -28,8 +46,9 @@ export default async function DisponibilidadePage() {
           </p>
         </div>
         <AvailabilityManager
-          availabilities={profile.availabilities}
+          availabilities={availabilities}
           consultationDuration={profile.consultationDurationMinutes}
+          createActionToken={availabilityCreateToken}
         />
       </div>
 
@@ -40,7 +59,7 @@ export default async function DisponibilidadePage() {
             Bloqueie períodos específicos — férias, eventos, folgas. Nesses horários nenhum paciente conseguirá agendar.
           </p>
         </div>
-        <BlockedSlotManager blockedSlots={profile.blockedSlots} />
+        <BlockedSlotManager blockedSlots={blockedSlots} createActionToken={blockedCreateToken} />
       </div>
     </div>
   )

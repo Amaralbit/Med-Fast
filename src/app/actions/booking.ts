@@ -1,15 +1,17 @@
 "use server"
 
+import { headers } from "next/headers"
 import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { PLAN_LIMITS } from "@/lib/plan"
+import { sanitizeMultilineText } from "@/lib/security/sanitize"
+import { verifyActionToken } from "@/lib/security/form-protection"
 
 export type SlotTime = { startAt: string; endAt: string; label: string }
 
 const DAY_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
-
 const NOTES_MAX_LENGTH = 2000
 
 function parseTime(timeStr: string): number {
@@ -23,9 +25,17 @@ function minutesToTime(minutes: number): string {
   return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
 }
 
+async function getClientIp() {
+  const h = await headers()
+  return h.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1"
+}
+
 export async function getAvailableSlots(doctorProfileId: string, dateStr: string): Promise<SlotTime[]> {
-  // dateStr = "YYYY-MM-DD" treated as Brazil time (UTC-3)
-  const date = new Date(dateStr + "T00:00:00-03:00")
+  const ip = await getClientIp()
+  const rl = checkRateLimit(`slots:${doctorProfileId}:${ip}`, 120, 60 * 1000)
+  if (!rl.allowed) return []
+
+  const date = new Date(`${dateStr}T00:00:00-03:00`)
   const dayOfWeek = DAY_OF_WEEK[date.getUTCDay()]
 
   const [profile, availability] = await Promise.all([
@@ -92,22 +102,27 @@ export async function bookAppointment(
   doctorProfileId: string,
   startAt: string,
   endAt: string,
-  notes?: string
+  notes: string | undefined,
+  actionToken: string
 ): Promise<{ error?: string; success?: boolean }> {
   const session = await auth()
   if (!session) return { error: "Faça login para agendar" }
   if (session.user.role !== "PATIENT") return { error: "Apenas pacientes podem agendar consultas" }
+
+  try {
+    await verifyActionToken(actionToken, "patient:book-appointment", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
 
   const patientProfile = await prisma.patientProfile.findUnique({
     where: { userId: session.user.id },
   })
   if (!patientProfile) return { error: "Perfil de paciente não encontrado" }
 
-  // 10 bookings per hour per patient — prevents booking-spam
   const rl = checkRateLimit(`book:${patientProfile.id}`, 10, 60 * 60 * 1000)
   if (!rl.allowed) return { error: "Muitas solicitações. Aguarde um momento." }
 
-  // Enforce monthly appointment cap for FREE plan
   const doctor = await prisma.doctorProfile.findUnique({
     where: { id: doctorProfileId },
     select: { plan: true },
@@ -126,8 +141,7 @@ export async function bookAppointment(
     }
   }
 
-  // Validate and sanitize notes
-  const sanitizedNotes = notes?.trim().slice(0, NOTES_MAX_LENGTH) || null
+  const sanitizedNotes = notes ? sanitizeMultilineText(notes, NOTES_MAX_LENGTH) || null : null
 
   const slotStart = new Date(startAt)
   const slotEnd = new Date(endAt)
@@ -136,8 +150,6 @@ export async function bookAppointment(
     return { error: "Horário inválido" }
   }
 
-  // Wrap conflict check + create in a transaction to minimize the race-condition window.
-  // For zero-race-condition guarantee, add a DB UNIQUE constraint on (doctorProfileId, startAt).
   try {
     await prisma.$transaction(async (tx) => {
       const conflict = await tx.appointment.findFirst({

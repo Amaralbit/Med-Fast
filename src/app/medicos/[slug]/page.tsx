@@ -6,6 +6,7 @@ import { ChatWidget } from "./chat-widget"
 import { AiChatWidget } from "./ai-chat-widget"
 import { BookingWidget } from "./booking-widget"
 import { hasAiChat } from "@/lib/plan"
+import { createActionToken } from "@/lib/security/form-protection"
 
 const DAY_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
@@ -49,6 +50,10 @@ export default async function DoctorPublicPage({ params }: Props) {
 
   const primary = doctor.colorPrimary
   const accent = doctor.colorAccent
+  const [bookingActionToken, chatActionToken] = await Promise.all([
+    createActionToken("patient:book-appointment", session?.user.id ?? "anon"),
+    createActionToken("public:ai-chat", session?.user.id ?? "anon"),
+  ])
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950" style={{ "--color-primary": primary, "--color-accent": accent } as React.CSSProperties}>
@@ -190,6 +195,7 @@ export default async function DoctorPublicPage({ params }: Props) {
           availableDays={doctor.availabilities.map((a) => a.dayOfWeek) as never}
           isLoggedIn={!!session}
           isPatient={session?.user.role === "PATIENT"}
+          actionToken={bookingActionToken}
         />
 
         {/* CTA */}
@@ -217,6 +223,7 @@ export default async function DoctorPublicPage({ params }: Props) {
           doctorSlug={doctor.slug}
           whatsapp={doctor.whatsapp}
           questions={doctor.chatQuestions}
+          actionToken={chatActionToken}
         />
       ) : (
         <ChatWidget

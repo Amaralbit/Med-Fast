@@ -12,11 +12,12 @@ type Props = {
   doctorSlug: string
   whatsapp: string | null
   questions: Question[]
+  actionToken: string
 }
 
 const MAX_HISTORY = 20
 
-export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, questions }: Props) {
+export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, questions, actionToken }: Props) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -26,14 +27,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([
-        {
-          from: "bot",
-          text: `Olá! Sou a secretária virtual do(a) ${doctorName}. Como posso te ajudar? Posso verificar horários disponíveis e agendar consultas.`,
-        },
-      ])
-    }
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 100)
     }
@@ -42,6 +35,20 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, loading])
+
+  function openChat() {
+    setMessages((prev) =>
+      prev.length > 0
+        ? prev
+        : [
+            {
+              from: "bot",
+              text: `Olá! Sou a secretária virtual do(a) ${doctorName}. Como posso te ajudar? Posso verificar horários disponíveis e agendar consultas.`,
+            },
+          ]
+    )
+    setOpen(true)
+  }
 
   async function handleSend() {
     const text = input.trim()
@@ -54,7 +61,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
     setLoading(true)
     setRequiresAuth(false)
 
-    // Keep only the last MAX_HISTORY messages for the API call
     const history = updatedMessages
       .slice(-MAX_HISTORY)
       .map((m) => ({ role: m.from === "user" ? "user" : "assistant", content: m.text }))
@@ -62,7 +68,7 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-action-token": actionToken },
         body: JSON.stringify({ messages: history, doctorSlug }),
       })
       const data = await res.json()
@@ -89,14 +95,13 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
     setTimeout(() => {
       setMessages((prev) => [...prev, { from: "bot", text: q.answer }])
       setLoading(false)
-    }, 800 + Math.random() * 600)
+    }, 1000)
   }
 
   return (
     <>
-      {/* Floating button */}
       <button
-        onClick={() => setOpen(true)}
+        onClick={openChat}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white transition-transform hover:scale-110 z-40"
         style={{ backgroundColor: colorPrimary }}
         aria-label="Abrir chat com IA"
@@ -104,16 +109,11 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
         <MessageCircle size={24} />
       </button>
 
-      {/* Chat panel */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end sm:p-6">
-          <div
-            className="absolute inset-0 bg-black/40 sm:hidden"
-            onClick={() => setOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/40 sm:hidden" onClick={() => setOpen(false)} />
 
           <div className="relative w-full sm:w-[380px] h-[90vh] sm:h-[540px] bg-white dark:bg-zinc-900 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            {/* Header */}
             <div
               className="px-4 py-3.5 flex items-center justify-between text-white shrink-0"
               style={{ backgroundColor: colorPrimary }}
@@ -135,7 +135,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
               </button>
             </div>
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
@@ -163,7 +162,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
               <div ref={bottomRef} />
             </div>
 
-            {/* Auth prompt */}
             {requiresAuth && (
               <div className="px-4 py-2 bg-amber-50 dark:bg-amber-950/30 border-t border-amber-200 dark:border-amber-900 shrink-0">
                 <p className="text-xs text-amber-700 dark:text-amber-400">
@@ -176,7 +174,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
               </div>
             )}
 
-            {/* FAQ quick-reply buttons + WhatsApp */}
             {(questions.length > 0 || whatsapp) && (
               <div className="px-3 py-2.5 border-t border-gray-100 dark:border-zinc-800 space-y-1.5 shrink-0">
                 {questions.length > 0 && (
@@ -222,7 +219,6 @@ export function AiChatWidget({ colorPrimary, doctorName, doctorSlug, whatsapp, q
               </div>
             )}
 
-            {/* Input */}
             <div className="px-3 py-3 border-t border-gray-200 dark:border-zinc-800 flex gap-2 items-center shrink-0">
               <input
                 ref={inputRef}

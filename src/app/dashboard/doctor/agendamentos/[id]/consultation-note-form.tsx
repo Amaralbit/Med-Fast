@@ -3,6 +3,7 @@
 import { useActionState } from "react"
 import { saveConsultationNote } from "@/app/actions/medical"
 import { ClipboardList, Save } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 type Note = {
   complaint: string | null
@@ -11,12 +12,12 @@ type Note = {
   notes: string | null
 } | null
 
-type Props = { appointmentId: string; note: Note }
+type Props = { appointmentId: string; note: Note; actionToken: string }
 
 const textarea =
   "w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
 
-export function ConsultationNoteForm({ appointmentId, note }: Props) {
+export function ConsultationNoteForm({ appointmentId, note, actionToken }: Props) {
   const [state, formAction, pending] = useActionState(saveConsultationNote, {})
 
   return (
@@ -27,6 +28,7 @@ export function ConsultationNoteForm({ appointmentId, note }: Props) {
       </p>
 
       <form action={formAction} className="space-y-4">
+        <ActionTokenInput token={actionToken} />
         <input type="hidden" name="appointmentId" value={appointmentId} />
 
         <div>

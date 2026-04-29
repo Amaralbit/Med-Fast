@@ -4,6 +4,7 @@ import { useActionState } from "react"
 import type { WeeklyAvailability } from "@/generated/prisma/client"
 import { addAvailability, removeAvailability } from "@/app/actions/doctor"
 import { Trash2 } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 const DAY_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
@@ -18,11 +19,12 @@ const DAY_LABELS: Record<string, string> = {
 const DAY_ORDER = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]
 
 type Props = {
-  availabilities: WeeklyAvailability[]
+  availabilities: Array<WeeklyAvailability & { removeActionToken: string }>
   consultationDuration: number
+  createActionToken: string
 }
 
-export function AvailabilityManager({ availabilities, consultationDuration }: Props) {
+export function AvailabilityManager({ availabilities, consultationDuration, createActionToken }: Props) {
   const [state, action, pending] = useActionState(addAvailability, {})
 
   const sorted = [...availabilities].sort(
@@ -56,11 +58,9 @@ export function AvailabilityManager({ availabilities, consultationDuration }: Pr
                     {av.startTime} – {av.endTime}
                   </span>
                 </div>
-                <form
-                  action={async () => {
-                    await removeAvailability(av.id)
-                  }}
-                >
+                <form action={removeAvailability}>
+                  <input type="hidden" name="id" value={av.id} />
+                  <ActionTokenInput token={av.removeActionToken} />
                   <button
                     type="submit"
                     className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
@@ -79,6 +79,7 @@ export function AvailabilityManager({ availabilities, consultationDuration }: Pr
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Adicionar horário</h2>
 
         <form action={action} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ActionTokenInput token={createActionToken} />
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dia</label>
             <select name="dayOfWeek" className="input">

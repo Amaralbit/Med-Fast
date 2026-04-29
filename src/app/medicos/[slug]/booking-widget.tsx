@@ -14,6 +14,7 @@ type Props = {
   availableDays: DayOfWeek[]
   isLoggedIn: boolean
   isPatient: boolean
+  actionToken: string
 }
 
 const DOW_INDEX: Record<DayOfWeek, number> = {
@@ -30,7 +31,7 @@ function toDateStr(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
-export function BookingWidget({ doctorProfileId, doctorName, colorPrimary, availableDays, isLoggedIn, isPatient }: Props) {
+export function BookingWidget({ doctorProfileId, doctorName, colorPrimary, availableDays, isLoggedIn, isPatient, actionToken }: Props) {
   const [step, setStep] = useState<"date" | "time" | "confirm" | "done">("date")
   const [weekOffset, setWeekOffset] = useState(0)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
@@ -76,7 +77,7 @@ export function BookingWidget({ doctorProfileId, doctorName, colorPrimary, avail
     if (!selectedSlot) return
     setError(null)
     startTransition(async () => {
-      const result = await bookAppointment(doctorProfileId, selectedSlot.startAt, selectedSlot.endAt, notes || undefined)
+      const result = await bookAppointment(doctorProfileId, selectedSlot.startAt, selectedSlot.endAt, notes || undefined, actionToken)
       if (result.error) {
         setError(result.error)
       } else {

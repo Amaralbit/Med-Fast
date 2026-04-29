@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
 import { HealthPlanManager } from "./health-plan-manager"
+import { createActionToken } from "@/lib/security/form-protection"
 
 export default async function ConveniosPage() {
   const session = await auth()
@@ -19,6 +20,20 @@ export default async function ConveniosPage() {
   const allPlans = await prisma.healthPlan.findMany({ orderBy: { name: "asc" } })
   const linkedIds = new Set(profile.healthPlans.map((p) => p.healthPlanId))
   const unlinkedPlans = allPlans.filter((p) => !linkedIds.has(p.id))
+  const createActionTokenValue = await createActionToken("doctor:add-health-plan", session.user.id)
+  const linkedPlans = await Promise.all(
+    profile.healthPlans.map(async (p) => ({
+      id: p.healthPlanId,
+      name: p.healthPlan.name,
+      removeActionToken: await createActionToken("doctor:remove-health-plan", session.user.id),
+    }))
+  )
+  const suggestedPlans = await Promise.all(
+    unlinkedPlans.map(async (p) => ({
+      ...p,
+      addActionToken: await createActionToken("doctor:add-health-plan", session.user.id),
+    }))
+  )
 
   return (
     <div className="p-8 max-w-3xl">
@@ -30,8 +45,9 @@ export default async function ConveniosPage() {
       </div>
 
       <HealthPlanManager
-        linkedPlans={profile.healthPlans.map((p) => ({ id: p.healthPlanId, name: p.healthPlan.name }))}
-        suggestedPlans={unlinkedPlans}
+        linkedPlans={linkedPlans}
+        suggestedPlans={suggestedPlans}
+        createActionToken={createActionTokenValue}
       />
     </div>
   )

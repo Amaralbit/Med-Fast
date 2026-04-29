@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { Trash2, X, AlertTriangle } from "lucide-react"
 import { deleteAccount } from "@/app/actions/account"
 
-export function DeleteAccountButton() {
+export function DeleteAccountButton({ actionToken }: { actionToken: string }) {
   const [open, setOpen] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -19,7 +19,7 @@ export function DeleteAccountButton() {
   function handleConfirm() {
     setError(null)
     startTransition(async () => {
-      const result = await deleteAccount()
+      const result = await deleteAccount(actionToken)
       if (result?.error) setError(result.error)
     })
   }

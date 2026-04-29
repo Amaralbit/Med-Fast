@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Clock, Mail, Phone } from "lucide-react"
 import { ConsultationNoteForm } from "./consultation-note-form"
 import { DocumentSection } from "./document-section"
+import { createActionToken } from "@/lib/security/form-protection"
 
 const STATUS_CONFIG = {
   PENDING:   { label: "Pendente",        className: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" },
@@ -58,6 +59,14 @@ export default async function AppointmentDetailPage({ params }: Props) {
   const cfg = STATUS_CONFIG[status]
   const start = new Date(appt.startAt)
   const end = new Date(appt.endAt)
+  const noteActionToken = await createActionToken("medical:save-note", session.user.id)
+  const uploadActionToken = await createActionToken("medical:upload-document", session.user.id)
+  const documents = await Promise.all(
+    appt.documents.map(async (doc) => ({
+      ...doc,
+      deleteActionToken: await createActionToken("medical:delete-document", session.user.id),
+    }))
+  )
 
   return (
     <div className="p-8 max-w-3xl space-y-8">
@@ -145,13 +154,13 @@ export default async function AppointmentDetailPage({ params }: Props) {
       {/* Consultation notes */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Prontuário desta consulta</h2>
-        <ConsultationNoteForm appointmentId={appt.id} note={appt.consultationNote} />
+        <ConsultationNoteForm appointmentId={appt.id} note={appt.consultationNote} actionToken={noteActionToken} />
       </div>
 
       {/* Documents */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-3">Documentos</h2>
-        <DocumentSection appointmentId={appt.id} documents={appt.documents} />
+        <DocumentSection appointmentId={appt.id} documents={documents} uploadActionToken={uploadActionToken} />
       </div>
     </div>
   )

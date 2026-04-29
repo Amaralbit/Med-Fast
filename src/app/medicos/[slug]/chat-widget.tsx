@@ -19,16 +19,17 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([
-        { from: "bot", text: `Olá! Sou a secretária virtual do(a) ${doctorName}. Como posso te ajudar?` },
-      ])
-    }
-  }, [open])
-
-  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  function openChat() {
+    setMessages((prev) =>
+      prev.length > 0
+        ? prev
+        : [{ from: "bot", text: `Olá! Sou a secretária virtual do(a) ${doctorName}. Como posso te ajudar?` }]
+    )
+    setOpen(true)
+  }
 
   function handleQuestion(q: Question) {
     setMessages((prev) => [
@@ -42,9 +43,8 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
 
   return (
     <>
-      {/* Floating button */}
       <button
-        onClick={() => setOpen(true)}
+        onClick={openChat}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white transition-transform hover:scale-110 z-40"
         style={{ backgroundColor: colorPrimary }}
         aria-label="Abrir chat"
@@ -52,16 +52,11 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
         <MessageCircle size={24} />
       </button>
 
-      {/* Chat panel */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:justify-end sm:p-6">
-          <div
-            className="absolute inset-0 bg-black/40 sm:hidden"
-            onClick={() => setOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/40 sm:hidden" onClick={() => setOpen(false)} />
 
           <div className="relative w-full sm:w-[380px] h-[90vh] sm:h-[520px] bg-white dark:bg-zinc-900 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            {/* Header */}
             <div
               className="px-4 py-3.5 flex items-center justify-between text-white shrink-0"
               style={{ backgroundColor: colorPrimary }}
@@ -83,7 +78,6 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
               </button>
             </div>
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
@@ -102,7 +96,6 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
               <div ref={bottomRef} />
             </div>
 
-            {/* Question buttons */}
             {showButtons && (
               <div className="px-3 py-3 border-t border-gray-200 dark:border-zinc-800 space-y-2 shrink-0">
                 <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium px-1">
@@ -115,7 +108,6 @@ export function ChatWidget({ colorPrimary, doctorName, whatsapp, questions }: Pr
                       key={q.id}
                       onClick={() => handleQuestion(q)}
                       className="w-full text-left text-sm px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 hover:border-transparent hover:text-white transition-all"
-                      style={{ "--hover-bg": colorPrimary } as React.CSSProperties}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = colorPrimary
                         e.currentTarget.style.borderColor = colorPrimary

@@ -4,15 +4,17 @@ import { useActionState } from "react"
 import { addBlockedSlot, removeBlockedSlot } from "@/app/actions/doctor"
 import type { ProfileState } from "@/app/actions/doctor"
 import { Trash2, Plus, BanIcon } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 type BlockedSlot = {
   id: string
   startAt: Date
   endAt: Date
   reason: string | null
+  removeActionToken: string
 }
 
-type Props = { blockedSlots: BlockedSlot[] }
+type Props = { blockedSlots: BlockedSlot[]; createActionToken: string }
 
 const tz = "America/Sao_Paulo"
 
@@ -30,7 +32,7 @@ function todayStr() {
 
 const initial: ProfileState = {}
 
-export function BlockedSlotManager({ blockedSlots }: Props) {
+export function BlockedSlotManager({ blockedSlots, createActionToken }: Props) {
   const [state, formAction, pending] = useActionState(addBlockedSlot, initial)
 
   const upcoming = blockedSlots
@@ -60,7 +62,9 @@ export function BlockedSlotManager({ blockedSlots }: Props) {
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{slot.reason}</p>
                 )}
               </div>
-              <form action={async () => { await removeBlockedSlot(slot.id) }}>
+              <form action={removeBlockedSlot}>
+                <input type="hidden" name="id" value={slot.id} />
+                <ActionTokenInput token={slot.removeActionToken} />
                 <button
                   type="submit"
                   title="Remover bloqueio"
@@ -82,6 +86,7 @@ export function BlockedSlotManager({ blockedSlots }: Props) {
         </h2>
 
         <form action={formAction} className="space-y-4">
+          <ActionTokenInput token={createActionToken} />
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">

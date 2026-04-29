@@ -5,6 +5,18 @@ import { prisma } from "@/server/db"
 import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import { put, del } from "@vercel/blob"
+import { headers } from "next/headers"
+import {
+  sendAppointmentConfirmedToPatient,
+  sendAppointmentCancelledToPatient,
+} from "@/lib/email"
+import { checkRateLimit } from "@/lib/rate-limit"
+import { getActionTokenValue, verifyActionToken } from "@/lib/security/form-protection"
+import {
+  sanitizeDigits,
+  sanitizeMultilineText,
+  sanitizePlainText,
+} from "@/lib/security/sanitize"
 
 const profileSchema = z.object({
   specialty: z.string().min(2, "Informe a especialidade").max(100, "Especialidade muito longa"),
@@ -24,21 +36,50 @@ const profileSchema = z.object({
 
 export type ProfileState = { error?: string; success?: boolean }
 
+async function getOwnProfile(userId: string) {
+  return prisma.doctorProfile.findUnique({
+    where: { userId },
+    include: { user: { select: { name: true, email: true } } },
+  })
+}
+
+async function getClientIp() {
+  const h = await headers()
+  return h.get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1"
+}
+
 export async function saveProfile(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:save-profile", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
 
   const raw = Object.fromEntries(formData.entries())
   const parsed = profileSchema.safeParse(raw)
   if (!parsed.success) return { error: parsed.error.issues[0].message }
 
-  const { pricePrivate, ...rest } = parsed.data
+  const data = parsed.data
 
   await prisma.doctorProfile.update({
     where: { userId: session.user.id },
     data: {
-      ...rest,
-      pricePrivate: pricePrivate ?? null,
+      specialty: sanitizePlainText(data.specialty, 100),
+      crm: data.crm ? sanitizePlainText(data.crm, 20) : null,
+      bio: data.bio ? sanitizeMultilineText(data.bio, 2000) : null,
+      whatsapp: data.whatsapp ? sanitizeDigits(data.whatsapp, 20) : null,
+      consultationDurationMinutes: data.consultationDurationMinutes,
+      pricePrivate: data.pricePrivate ?? null,
+      colorPrimary: data.colorPrimary,
+      colorAccent: data.colorAccent,
+      addressStreet: data.addressStreet ? sanitizePlainText(data.addressStreet, 200) : null,
+      addressCity: data.addressCity ? sanitizePlainText(data.addressCity, 100) : null,
+      addressState: data.addressState ? sanitizePlainText(data.addressState, 2).toUpperCase() : null,
+      addressZip: data.addressZip ? sanitizePlainText(data.addressZip, 10) : null,
+      isPublished: !!data.isPublished,
     },
   })
 
@@ -47,10 +88,8 @@ export async function saveProfile(_: ProfileState, formData: FormData): Promise<
   return { success: true }
 }
 
-// ─── Disponibilidade ───────────────────────────────────────────────────────
-
 const availabilitySchema = z.object({
-  dayOfWeek: z.enum(["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]),
+  dayOfWeek: z.enum(["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]),
   startTime: z.string().regex(/^\d{2}:\d{2}$/),
   endTime: z.string().regex(/^\d{2}:\d{2}$/),
 })
@@ -58,6 +97,12 @@ const availabilitySchema = z.object({
 export async function addAvailability(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:add-availability", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
 
   const parsed = availabilitySchema.safeParse(Object.fromEntries(formData.entries()))
   if (!parsed.success) return { error: parsed.error.issues[0].message }
@@ -73,9 +118,14 @@ export async function addAvailability(_: ProfileState, formData: FormData): Prom
   return { success: true }
 }
 
-export async function removeAvailability(id: string): Promise<void> {
+export async function removeAvailability(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:remove-availability", session.user.id)
+
+  const id = formData.get("id")?.toString()
+  if (!id) return
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return
@@ -87,15 +137,19 @@ export async function removeAvailability(id: string): Promise<void> {
   revalidatePath("/dashboard/doctor/disponibilidade")
 }
 
-// ─── Convênios ────────────────────────────────────────────────────────────────
-
 export async function addHealthPlan(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
 
-  const name = formData.get("name")?.toString().trim()
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:add-health-plan", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
+
+  const nameRaw = formData.get("name")?.toString()
+  const name = nameRaw ? sanitizePlainText(nameRaw, 100) : ""
   if (!name || name.length < 2) return { error: "Informe o nome do convênio" }
-  if (name.length > 100) return { error: "Nome do convênio muito longo (máx. 100 caracteres)" }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return { error: "Perfil não encontrado" }
@@ -119,9 +173,14 @@ export async function addHealthPlan(_: ProfileState, formData: FormData): Promis
   return { success: true }
 }
 
-export async function removeHealthPlan(healthPlanId: string): Promise<void> {
+export async function removeHealthPlan(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:remove-health-plan", session.user.id)
+
+  const healthPlanId = formData.get("healthPlanId")?.toString()
+  if (!healthPlanId) return
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return
@@ -133,23 +192,14 @@ export async function removeHealthPlan(healthPlanId: string): Promise<void> {
   revalidatePath("/dashboard/doctor/convenios")
 }
 
-// ─── Agendamentos ─────────────────────────────────────────────────────────────
-
-import {
-  sendAppointmentConfirmedToPatient,
-  sendAppointmentCancelledToPatient,
-} from "@/lib/email"
-
-async function getOwnProfile(userId: string) {
-  return prisma.doctorProfile.findUnique({
-    where: { userId },
-    include: { user: { select: { name: true, email: true } } },
-  })
-}
-
-export async function confirmAppointment(appointmentId: string): Promise<void> {
+export async function confirmAppointment(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:confirm-appointment", session.user.id)
+
+  const appointmentId = formData.get("appointmentId")?.toString()
+  if (!appointmentId) return
 
   const profile = await getOwnProfile(session.user.id)
   if (!profile) return
@@ -178,9 +228,14 @@ export async function confirmAppointment(appointmentId: string): Promise<void> {
   }).catch(() => {})
 }
 
-export async function cancelAppointment(appointmentId: string): Promise<void> {
+export async function cancelAppointment(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:cancel-appointment", session.user.id)
+
+  const appointmentId = formData.get("appointmentId")?.toString()
+  if (!appointmentId) return
 
   const profile = await getOwnProfile(session.user.id)
   if (!profile) return
@@ -210,9 +265,14 @@ export async function cancelAppointment(appointmentId: string): Promise<void> {
   }).catch(() => {})
 }
 
-export async function completeAppointment(appointmentId: string): Promise<void> {
+export async function completeAppointment(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:complete-appointment", session.user.id)
+
+  const appointmentId = formData.get("appointmentId")?.toString()
+  if (!appointmentId) return
 
   const profile = await getOwnProfile(session.user.id)
   if (!profile) return
@@ -225,26 +285,33 @@ export async function completeAppointment(appointmentId: string): Promise<void> 
   revalidatePath("/dashboard/doctor/agendamentos")
 }
 
-// ─── Bloqueios manuais ────────────────────────────────────────────────────────
-
 export async function addBlockedSlot(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
+
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:add-blocked-slot", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
 
   const startDate = formData.get("startDate")?.toString()
   const startTime = formData.get("startTime")?.toString()
   const endDate = formData.get("endDate")?.toString()
   const endTime = formData.get("endTime")?.toString()
-  const reason = formData.get("reason")?.toString().trim().slice(0, 200) || null
+  const reasonRaw = formData.get("reason")?.toString()
+  const reason = reasonRaw ? sanitizePlainText(reasonRaw, 200) || null : null
 
-  if (!startDate || !startTime || !endDate || !endTime)
+  if (!startDate || !startTime || !endDate || !endTime) {
     return { error: "Preencha data e horário de início e fim" }
+  }
 
   const startAt = new Date(`${startDate}T${startTime}:00-03:00`)
   const endAt = new Date(`${endDate}T${endTime}:00-03:00`)
 
-  if (isNaN(startAt.getTime()) || isNaN(endAt.getTime()))
+  if (isNaN(startAt.getTime()) || isNaN(endAt.getTime())) {
     return { error: "Data ou horário inválidos" }
+  }
   if (endAt <= startAt) return { error: "O fim deve ser depois do início" }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
@@ -258,9 +325,14 @@ export async function addBlockedSlot(_: ProfileState, formData: FormData): Promi
   return { success: true }
 }
 
-export async function removeBlockedSlot(id: string): Promise<void> {
+export async function removeBlockedSlot(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:remove-blocked-slot", session.user.id)
+
+  const id = formData.get("id")?.toString()
+  if (!id) return
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return
@@ -269,18 +341,26 @@ export async function removeBlockedSlot(id: string): Promise<void> {
   revalidatePath("/dashboard/doctor/disponibilidade")
 }
 
-// ─── Chat FAQ ─────────────────────────────────────────────────────────────────
-
 export async function addChatQuestion(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
 
-  const question = formData.get("question")?.toString().trim()
-  const answer = formData.get("answer")?.toString().trim()
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:add-chat-question", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
+
+  const ip = await getClientIp()
+  const rl = checkRateLimit(`doctor-faq:${session.user.id}:${ip}`, 30, 15 * 60 * 1000)
+  if (!rl.allowed) return { error: "Muitas alterações em pouco tempo. Aguarde alguns minutos." }
+
+  const questionRaw = formData.get("question")?.toString()
+  const answerRaw = formData.get("answer")?.toString()
+  const question = questionRaw ? sanitizePlainText(questionRaw, 500) : ""
+  const answer = answerRaw ? sanitizeMultilineText(answerRaw, 2000) : ""
   if (!question || question.length < 3) return { error: "Informe a pergunta" }
-  if (question.length > 500) return { error: "Pergunta muito longa (máx. 500 caracteres)" }
   if (!answer || answer.length < 3) return { error: "Informe a resposta" }
-  if (answer.length > 2000) return { error: "Resposta muito longa (máx. 2000 caracteres)" }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return { error: "Perfil não encontrado" }
@@ -304,9 +384,14 @@ export async function addChatQuestion(_: ProfileState, formData: FormData): Prom
   return { success: true }
 }
 
-export async function removeChatQuestion(id: string): Promise<void> {
+export async function removeChatQuestion(formData: FormData): Promise<void> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return
+
+  await verifyActionToken(getActionTokenValue(formData), "doctor:remove-chat-question", session.user.id)
+
+  const id = formData.get("id")?.toString()
+  if (!id) return
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return
@@ -318,26 +403,38 @@ export async function removeChatQuestion(id: string): Promise<void> {
   revalidatePath("/dashboard/doctor/chat-faq")
 }
 
-// ─── Foto de perfil ───────────────────────────────────────────────────────────
-
 export async function uploadProfilePhoto(_: ProfileState, formData: FormData): Promise<ProfileState> {
   const session = await auth()
   if (!session || session.user.role !== "DOCTOR") return { error: "Não autorizado" }
 
+  try {
+    await verifyActionToken(getActionTokenValue(formData), "doctor:upload-profile-photo", session.user.id)
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Falha de segurança na requisição" }
+  }
+
   const file = formData.get("photo") as File | null
   if (!file || file.size === 0) return { error: "Selecione uma foto" }
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     return { error: "Apenas JPEG, PNG ou WebP" }
+  }
   if (file.size > 5 * 1024 * 1024) return { error: "Foto muito grande (máx. 5 MB)" }
+
+  const ip = await getClientIp()
+  const rl = checkRateLimit(`doctor-photo:${session.user.id}:${ip}`, 10, 60 * 60 * 1000)
+  if (!rl.allowed) return { error: "Muitas tentativas de upload. Aguarde um pouco." }
 
   const profile = await prisma.doctorProfile.findUnique({ where: { userId: session.user.id } })
   if (!profile) return { error: "Perfil não encontrado" }
 
   if (profile.profilePhotoUrl) {
-    try { await del(profile.profilePhotoUrl) } catch { /* já removida */ }
+    try {
+      await del(profile.profilePhotoUrl)
+    } catch {
+      // ignore
+    }
   }
 
-  // Derive extension from MIME type to prevent extension spoofing
   const mimeToExt: Record<string, string> = {
     "image/jpeg": "jpg",
     "image/png": "png",

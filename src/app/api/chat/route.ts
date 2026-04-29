@@ -6,6 +6,8 @@ import { getAvailableSlots } from "@/lib/slots"
 import { sendNewAppointmentToDoctor } from "@/lib/email"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { hasAiChat, PLAN_LIMITS } from "@/lib/plan"
+import { ACTION_TOKEN_HEADER, verifyActionToken } from "@/lib/security/form-protection"
+import { sanitizeMultilineText } from "@/lib/security/sanitize"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -26,11 +28,11 @@ const TOOLS: Tool[] = [
     functionDeclarations: [
       {
         name: "check_available_slots",
-        description: "Verifica os horários disponíveis para agendamento nos próximos dias",
+        description: "Verifica os horarios disponiveis para agendamento nos proximos dias",
         parameters: {
           type: Type.OBJECT,
           properties: {
-            days_ahead: { type: Type.NUMBER, description: "Quantos dias à frente verificar (padrão: 14)" },
+            days_ahead: { type: Type.NUMBER, description: "Quantos dias a frente verificar (padrao: 14)" },
           },
         },
       },
@@ -50,10 +52,22 @@ const TOOLS: Tool[] = [
   },
 ]
 
-export async function POST(req: Request) {
+type ChatMessage = { role: "user" | "assistant"; content: string }
+
+function getSameOriginHost(req: Request) {
   const origin = req.headers.get("origin")
-  const host = req.headers.get("host")
-  if (origin && host && !origin.includes(host)) {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host")
+  if (!origin || !host) return true
+
+  try {
+    return new URL(origin).host === host
+  } catch {
+    return false
+  }
+}
+
+export async function POST(req: Request) {
+  if (!getSameOriginHost(req)) {
     return Response.json({ error: "Forbidden" }, { status: 403 })
   }
 
@@ -64,6 +78,18 @@ export async function POST(req: Request) {
       { error: "Muitas requisições. Aguarde um momento." },
       { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
     )
+  }
+
+  const session = await auth()
+  try {
+    await verifyActionToken(
+      req.headers.get(ACTION_TOKEN_HEADER),
+      "public:ai-chat",
+      session?.user.id ?? "anon",
+      2 * 60 * 60 * 1000
+    )
+  } catch {
+    return Response.json({ error: "Falha de segurança na requisição" }, { status: 403 })
   }
 
   let body: { messages?: unknown; doctorSlug?: unknown }
@@ -79,23 +105,25 @@ export async function POST(req: Request) {
     return Response.json({ error: "Slug inválido" }, { status: 400 })
   }
 
-  if (!Array.isArray(rawMessages) || rawMessages.length === 0) {
+  if (!Array.isArray(rawMessages) || rawMessages.length === 0 || rawMessages.length > MAX_MESSAGES) {
     return Response.json({ error: "Mensagens inválidas" }, { status: 400 })
   }
 
-  if (rawMessages.length > MAX_MESSAGES) {
-    return Response.json({ error: "Histórico muito longo" }, { status: 400 })
+  let messages: ChatMessage[]
+  try {
+    messages = rawMessages.map((m) => {
+      if (typeof m !== "object" || m === null) throw new Error("invalid")
+      const msg = m as Record<string, unknown>
+      if (msg.role !== "user" && msg.role !== "assistant") throw new Error("invalid-role")
+      if (typeof msg.content !== "string") throw new Error("invalid-content")
+      return {
+        role: msg.role as "user" | "assistant",
+        content: sanitizeMultilineText(msg.content, MAX_MESSAGE_CHARS),
+      }
+    })
+  } catch {
+    return Response.json({ error: "Mensagens inválidas" }, { status: 400 })
   }
-
-  const messages = rawMessages.map((m) => {
-    if (typeof m !== "object" || m === null) throw new Error("invalid")
-    const msg = m as Record<string, unknown>
-    if (msg.role !== "user" && msg.role !== "assistant") throw new Error("invalid role")
-    if (typeof msg.content !== "string") throw new Error("invalid content")
-    return { role: msg.role as "user" | "assistant", content: (msg.content as string).slice(0, MAX_MESSAGE_CHARS) }
-  })
-
-  const session = await auth()
 
   const doctor = await prisma.doctorProfile.findUnique({
     where: { slug: doctorSlug, isPublished: true },
@@ -114,7 +142,6 @@ export async function POST(req: Request) {
   })
 
   if (!doctor) return Response.json({ error: "Médico não encontrado" }, { status: 404 })
-
   if (!hasAiChat(doctor.plan)) {
     return Response.json({ error: "Chat com IA não disponível neste plano." }, { status: 403 })
   }
@@ -153,7 +180,8 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
       if (isNaN(startAt.getTime())) return JSON.stringify({ error: "INVALID_DATETIME" })
 
       const endAt = new Date(startAt.getTime() + doctor.consultationDurationMinutes * 60 * 1000)
-      const notes = typeof args.notes === "string" ? args.notes.trim().slice(0, NOTES_MAX) || null : null
+      const notes =
+        typeof args.notes === "string" ? sanitizeMultilineText(args.notes, NOTES_MAX) || null : null
 
       const plan = (doctor.plan ?? "FREE") as keyof typeof PLAN_LIMITS
       const monthCap = PLAN_LIMITS[plan].maxAppointmentsPerMonth
@@ -203,10 +231,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
   }
 
   const ai = getGemini()
-
-  // Convert messages to Gemini format (assistant → model)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const contents: { role: string; parts: any[] }[] = messages.map((m) => ({
+  const contents: { role: string; parts: Array<{ text?: string; functionResponse?: object }> }[] = messages.map((m) => ({
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
   }))

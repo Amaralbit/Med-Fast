@@ -1,6 +1,8 @@
+import crypto from "node:crypto"
 import NextAuth from "next-auth"
 import { authConfig } from "@/auth.config"
 import { NextResponse } from "next/server"
+import { ACTION_TOKEN_COOKIE } from "@/lib/security/form-protection"
 
 const { auth } = NextAuth(authConfig)
 
@@ -85,10 +87,21 @@ export default auth((req) => {
   requestHeaders.set("x-nonce", nonce)
   requestHeaders.set("Content-Security-Policy", csp)
 
-  return applySecurityHeaders(
+  const response = applySecurityHeaders(
     NextResponse.next({ request: { headers: requestHeaders } }),
     csp
   )
+
+  if (!req.cookies.get(ACTION_TOKEN_COOKIE)?.value) {
+    response.cookies.set(ACTION_TOKEN_COOKIE, crypto.randomBytes(32).toString("base64url"), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    })
+  }
+
+  return response
 })
 
 export const config = {

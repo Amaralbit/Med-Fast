@@ -5,6 +5,8 @@ import Link from "next/link"
 import { cancelPatientAppointment } from "@/app/actions/patient"
 import { Clock, CalendarX, ExternalLink, X, FileText } from "lucide-react"
 import { DeleteAccountButton } from "@/components/delete-account-button"
+import { createActionToken } from "@/lib/security/form-protection"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 const DOC_LABEL: Record<string, string> = { PRESCRIPTION: "Receita", CERTIFICATE: "Atestado", OTHER: "Documento" }
 
@@ -50,6 +52,13 @@ export default async function ConsultasPage({ searchParams }: Props) {
     },
     orderBy: { startAt: activeTab.key === "upcoming" ? "asc" : "desc" },
   })
+  const appointmentsWithTokens = await Promise.all(
+    appointments.map(async (appt) => ({
+      ...appt,
+      cancelActionToken: await createActionToken("patient:cancel-appointment", session.user.id),
+    }))
+  )
+  const deleteAccountToken = await createActionToken("account:delete", session.user.id)
 
   return (
     <>
@@ -60,7 +69,7 @@ export default async function ConsultasPage({ searchParams }: Props) {
             Acompanhe o status dos seus agendamentos
           </p>
         </div>
-        <DeleteAccountButton />
+        <DeleteAccountButton actionToken={deleteAccountToken} />
       </div>
 
       {/* Tabs */}
@@ -99,7 +108,7 @@ export default async function ConsultasPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="space-y-3">
-          {appointments.map((appt) => {
+          {appointmentsWithTokens.map((appt) => {
             const status = appt.status as AppointmentStatus
             const cfg = STATUS_CONFIG[status]
             const doctor = appt.doctorProfile
@@ -208,12 +217,9 @@ export default async function ConsultasPage({ searchParams }: Props) {
                       </Link>
 
                       {canCancel && (
-                        <form
-                          action={async () => {
-                            "use server"
-                            await cancelPatientAppointment(appt.id)
-                          }}
-                        >
+                        <form action={cancelPatientAppointment}>
+                          <input type="hidden" name="appointmentId" value={appt.id} />
+                          <ActionTokenInput token={appt.cancelActionToken} />
                           <button
                             type="submit"
                             className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-500 transition-colors"

@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { prisma } from "@/server/db"
 import { redirect } from "next/navigation"
 import { FaqManager } from "./faq-manager"
+import { createActionToken } from "@/lib/security/form-protection"
 
 export default async function ChatFaqPage() {
   const session = await auth()
@@ -14,6 +15,13 @@ export default async function ChatFaqPage() {
     },
   })
   if (!profile) redirect("/dashboard/doctor")
+  const createActionTokenValue = await createActionToken("doctor:add-chat-question", session.user.id)
+  const questions = await Promise.all(
+    profile.chatQuestions.map(async (q) => ({
+      ...q,
+      removeActionToken: await createActionToken("doctor:remove-chat-question", session.user.id),
+    }))
+  )
 
   return (
     <div className="p-8 max-w-2xl">
@@ -24,7 +32,7 @@ export default async function ChatFaqPage() {
         </p>
       </div>
 
-      <FaqManager questions={profile.chatQuestions} whatsapp={profile.whatsapp} />
+      <FaqManager questions={questions} whatsapp={profile.whatsapp} createActionToken={createActionTokenValue} />
     </div>
   )
 }

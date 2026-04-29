@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { ProfileForm } from "./profile-form"
 import { PhotoUpload } from "./photo-upload"
 import { DeleteAccountButton } from "@/components/delete-account-button"
+import { createActionToken } from "@/lib/security/form-protection"
 
 export default async function PerfilPage() {
   const session = await auth()
@@ -16,6 +17,12 @@ export default async function PerfilPage() {
 
   if (!profile) redirect("/dashboard/doctor")
 
+  const [deleteAccountToken, photoUploadToken, profileFormToken] = await Promise.all([
+    createActionToken("account:delete", session.user.id),
+    createActionToken("doctor:upload-profile-photo", session.user.id),
+    createActionToken("doctor:save-profile", session.user.id),
+  ])
+
   return (
     <div className="p-8 max-w-3xl">
       <div className="flex items-start justify-between gap-4 mb-8">
@@ -25,11 +32,11 @@ export default async function PerfilPage() {
             Essas informações aparecem na sua página pública para os pacientes
           </p>
         </div>
-        <DeleteAccountButton />
+        <DeleteAccountButton actionToken={deleteAccountToken} />
       </div>
 
-      <PhotoUpload currentPhotoUrl={profile.profilePhotoUrl} doctorName={profile.user.name} />
-      <ProfileForm profile={profile} />
+      <PhotoUpload currentPhotoUrl={profile.profilePhotoUrl} doctorName={profile.user.name} actionToken={photoUploadToken} />
+      <ProfileForm profile={profile} actionToken={profileFormToken} />
     </div>
   )
 }

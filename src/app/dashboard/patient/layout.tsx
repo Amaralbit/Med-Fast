@@ -1,7 +1,10 @@
-import { auth, signOut } from "@/auth"
+import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Stethoscope, ClipboardList, LogOut } from "lucide-react"
+import { createActionToken } from "@/lib/security/form-protection"
+import { ActionTokenInput } from "@/components/action-token-input"
+import { signOutAction } from "@/app/actions/auth"
 
 const navItems = [
   { href: "/dashboard/patient", label: "Médicos", icon: Stethoscope },
@@ -11,6 +14,7 @@ const navItems = [
 export default async function PatientLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
   if (!session || session.user.role !== "PATIENT") redirect("/login")
+  const signOutActionToken = await createActionToken("auth:signout", session.user.id)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
@@ -37,7 +41,8 @@ export default async function PatientLayout({ children }: { children: React.Reac
             <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
               {session.user.name}
             </span>
-            <form action={async () => { "use server"; await signOut({ redirect: false }); redirect("/login") }}>
+            <form action={signOutAction}>
+              <ActionTokenInput token={signOutActionToken} />
               <button
                 type="submit"
                 className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"

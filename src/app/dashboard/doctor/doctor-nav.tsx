@@ -8,6 +8,7 @@ import {
   ClipboardList, CalendarDays, MessageCircle, CreditCard, Menu, X,
 } from "lucide-react"
 import { signOutAction } from "@/app/actions/auth"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 const navItems = [
   { href: "/dashboard/doctor", label: "Visão Geral", icon: LayoutDashboard },
@@ -45,7 +46,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
   )
 }
 
-export function DoctorNav({ userName }: { userName: string }) {
+export function DoctorNav({ userName, signOutActionToken }: { userName: string; signOutActionToken: string }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -60,6 +61,7 @@ export function DoctorNav({ userName }: { userName: string }) {
         <NavLinks pathname={pathname} />
         <div className="px-3 py-4 border-t border-gray-200 dark:border-zinc-800">
           <form action={signOutAction}>
+            <ActionTokenInput token={signOutActionToken} />
             <button
               type="submit"
               className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
@@ -106,6 +108,7 @@ export function DoctorNav({ userName }: { userName: string }) {
             <NavLinks pathname={pathname} onNavigate={() => setOpen(false)} />
             <div className="px-3 py-4 border-t border-gray-200 dark:border-zinc-800">
               <form action={signOutAction}>
+                <ActionTokenInput token={signOutActionToken} />
                 <button
                   type="submit"
                   className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"

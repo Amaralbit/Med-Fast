@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs"
 import type { Role } from "@/generated/prisma/client"
 import { prisma } from "@/server/db"
 import { authConfig } from "@/auth.config"
+import { sanitizeEmail } from "@/lib/security/sanitize"
 
 declare module "next-auth" {
   interface Session {
@@ -37,8 +38,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = loginSchema.safeParse(credentials)
         if (!parsed.success) return null
 
+        const email = sanitizeEmail(parsed.data.email)
         const user = await prisma.user.findUnique({
-          where: { email: parsed.data.email },
+          where: { email },
         })
         if (!user) return null
 

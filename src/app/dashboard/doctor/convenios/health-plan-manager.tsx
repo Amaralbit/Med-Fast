@@ -3,15 +3,18 @@
 import { useActionState } from "react"
 import { addHealthPlan, removeHealthPlan } from "@/app/actions/doctor"
 import { Trash2, Plus } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
-type Plan = { id: string; name: string }
+type LinkedPlan = { id: string; name: string; removeActionToken: string }
+type SuggestedPlan = { id: string; name: string; addActionToken: string }
 
 type Props = {
-  linkedPlans: Plan[]
-  suggestedPlans: Plan[]
+  linkedPlans: LinkedPlan[]
+  suggestedPlans: SuggestedPlan[]
+  createActionToken: string
 }
 
-export function HealthPlanManager({ linkedPlans, suggestedPlans }: Props) {
+export function HealthPlanManager({ linkedPlans, suggestedPlans, createActionToken }: Props) {
   const [state, action, pending] = useActionState(addHealthPlan, {})
 
   return (
@@ -34,7 +37,9 @@ export function HealthPlanManager({ linkedPlans, suggestedPlans }: Props) {
             {linkedPlans.map((plan) => (
               <li key={plan.id} className="flex items-center justify-between px-6 py-3.5">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">{plan.name}</span>
-                <form action={async () => { await removeHealthPlan(plan.id) }}>
+                <form action={removeHealthPlan}>
+                  <input type="hidden" name="healthPlanId" value={plan.id} />
+                  <ActionTokenInput token={plan.removeActionToken} />
                   <button
                     type="submit"
                     className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
@@ -57,14 +62,9 @@ export function HealthPlanManager({ linkedPlans, suggestedPlans }: Props) {
           </p>
           <div className="flex flex-wrap gap-2">
             {suggestedPlans.map((plan) => (
-              <form
-                key={plan.id}
-                action={async () => {
-                  const fd = new FormData()
-                  fd.set("name", plan.name)
-                  await addHealthPlan({}, fd)
-                }}
-              >
+              <form key={plan.id} action={action}>
+                <input type="hidden" name="name" value={plan.name} />
+                <ActionTokenInput token={plan.addActionToken} />
                 <button
                   type="submit"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-gray-400 hover:border-blue-400 dark:hover:border-cyan-500 hover:text-blue-500 dark:hover:text-cyan-400 transition-colors"
@@ -83,6 +83,7 @@ export function HealthPlanManager({ linkedPlans, suggestedPlans }: Props) {
         <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Adicionar convênio</h2>
 
         <form action={action} className="flex gap-3">
+          <ActionTokenInput token={createActionToken} />
           <input
             name="name"
             placeholder="Ex: Unimed, Bradesco Saúde, SulAmérica..."

@@ -3,10 +3,11 @@
 import { useActionState, useRef } from "react"
 import { uploadProfilePhoto } from "@/app/actions/doctor"
 import { Camera, Loader2 } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
-type Props = { currentPhotoUrl: string | null; doctorName: string }
+type Props = { currentPhotoUrl: string | null; doctorName: string; actionToken: string }
 
-export function PhotoUpload({ currentPhotoUrl, doctorName }: Props) {
+export function PhotoUpload({ currentPhotoUrl, doctorName, actionToken }: Props) {
   const [state, formAction, pending] = useActionState(uploadProfilePhoto, {})
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -49,6 +50,7 @@ export function PhotoUpload({ currentPhotoUrl, doctorName }: Props) {
         {state?.success && <p className="text-xs text-green-600 dark:text-green-400 mt-1">Foto atualizada!</p>}
 
         <form action={formAction}>
+          <ActionTokenInput token={actionToken} />
           <input
             ref={inputRef}
             type="file"

@@ -4,17 +4,19 @@ import { useActionState } from "react"
 import type { ProfileState } from "@/app/actions/doctor"
 import { addChatQuestion, removeChatQuestion } from "@/app/actions/doctor"
 import { Trash2, Plus, MessageCircle, Phone } from "lucide-react"
+import { ActionTokenInput } from "@/components/action-token-input"
 
-type Question = { id: string; question: string; answer: string }
+type Question = { id: string; question: string; answer: string; removeActionToken: string }
 
 type Props = {
   questions: Question[]
   whatsapp: string | null
+  createActionToken: string
 }
 
 const initialState: ProfileState = {}
 
-export function FaqManager({ questions, whatsapp }: Props) {
+export function FaqManager({ questions, whatsapp, createActionToken }: Props) {
   const [state, formAction, pending] = useActionState(addChatQuestion, initialState)
 
   return (
@@ -64,7 +66,9 @@ export function FaqManager({ questions, whatsapp }: Props) {
                   {q.answer}
                 </p>
               </div>
-              <form action={async () => { await removeChatQuestion(q.id) }}>
+              <form action={removeChatQuestion}>
+                <input type="hidden" name="id" value={q.id} />
+                <ActionTokenInput token={q.removeActionToken} />
                 <button
                   type="submit"
                   title="Remover"
@@ -86,6 +90,7 @@ export function FaqManager({ questions, whatsapp }: Props) {
         </h2>
 
         <form action={formAction} className="space-y-3">
+          <ActionTokenInput token={createActionToken} />
           <div>
             <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
               Pergunta

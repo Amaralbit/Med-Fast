@@ -3,14 +3,16 @@
 import { useActionState } from "react"
 import type { DoctorProfile } from "@/generated/prisma/client"
 import { saveProfile } from "@/app/actions/doctor"
+import { ActionTokenInput } from "@/components/action-token-input"
 
 const DURATIONS = [15, 20, 30, 45, 60, 90, 120]
 
-export function ProfileForm({ profile }: { profile: DoctorProfile }) {
+export function ProfileForm({ profile, actionToken }: { profile: DoctorProfile; actionToken: string }) {
   const [state, action, pending] = useActionState(saveProfile, {})
 
   return (
     <form action={action} className="space-y-8">
+      <ActionTokenInput token={actionToken} />
 
       {/* Dados profissionais */}
       <section className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4">
