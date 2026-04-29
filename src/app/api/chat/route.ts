@@ -17,6 +17,7 @@ const NOTES_MAX = 2000
 const SLUG_RE = /^[a-z0-9-]+$/
 const MAX_MESSAGES = 50
 const MAX_MESSAGE_CHARS = 10_000
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 function normalizeApiKey(raw: string | undefined) {
   if (!raw) return null
@@ -37,27 +38,37 @@ function getGemini() {
   return new GoogleGenAI({ apiKey })
 }
 
+function getBrazilToday() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date())
+}
+
 const TOOLS: Tool[] = [
   {
     functionDeclarations: [
       {
         name: "check_available_slots",
-        description: "Verifica os horarios disponiveis para agendamento nos proximos dias",
+        description: "Verifica horarios disponiveis para agendamento nos proximos dias ou em uma data especifica.",
         parameters: {
           type: Type.OBJECT,
           properties: {
-            days_ahead: { type: Type.NUMBER, description: "Quantos dias a frente verificar (padrao: 14)" },
+            days_ahead: { type: Type.NUMBER, description: "Quantos dias a frente verificar (padrao: 14)." },
+            date: { type: Type.STRING, description: "Data exata no formato YYYY-MM-DD." },
           },
         },
       },
       {
         name: "book_appointment",
-        description: "Agenda uma consulta para o paciente logado no sistema",
+        description: "Agenda uma consulta para o paciente logado no sistema.",
         parameters: {
           type: Type.OBJECT,
           properties: {
             slot_datetime: { type: Type.STRING, description: "ISO 8601, ex: 2026-04-22T09:00:00.000Z" },
-            notes: { type: Type.STRING, description: "Motivo da consulta (opcional)" },
+            notes: { type: Type.STRING, description: "Motivo da consulta (opcional)." },
           },
           required: ["slot_datetime"],
         },
@@ -89,7 +100,7 @@ export async function POST(req: Request) {
   const rl = checkRateLimit(`chat:${ip}`, 8, 60 * 1000)
   if (!rl.allowed) {
     return Response.json(
-      { error: "Muitas requisições. Aguarde um momento." },
+      { error: "Muitas requisicoes. Aguarde um momento." },
       { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
     )
   }
@@ -103,24 +114,24 @@ export async function POST(req: Request) {
       2 * 60 * 60 * 1000
     )
   } catch {
-    return Response.json({ error: "Falha de segurança na requisição" }, { status: 403 })
+    return Response.json({ error: "Falha de seguranca na requisicao" }, { status: 403 })
   }
 
   let body: { messages?: unknown; doctorSlug?: unknown }
   try {
     body = await req.json()
   } catch {
-    return Response.json({ error: "JSON inválido" }, { status: 400 })
+    return Response.json({ error: "JSON invalido" }, { status: 400 })
   }
 
   const { messages: rawMessages, doctorSlug } = body
 
   if (typeof doctorSlug !== "string" || !SLUG_RE.test(doctorSlug) || doctorSlug.length > 100) {
-    return Response.json({ error: "Slug inválido" }, { status: 400 })
+    return Response.json({ error: "Slug invalido" }, { status: 400 })
   }
 
   if (!Array.isArray(rawMessages) || rawMessages.length === 0 || rawMessages.length > MAX_MESSAGES) {
-    return Response.json({ error: "Mensagens inválidas" }, { status: 400 })
+    return Response.json({ error: "Mensagens invalidas" }, { status: 400 })
   }
 
   let messages: ChatMessage[]
@@ -136,7 +147,7 @@ export async function POST(req: Request) {
       }
     })
   } catch {
-    return Response.json({ error: "Mensagens inválidas" }, { status: 400 })
+    return Response.json({ error: "Mensagens invalidas" }, { status: 400 })
   }
 
   const doctor = await prisma.doctorProfile.findUnique({
@@ -155,33 +166,48 @@ export async function POST(req: Request) {
     },
   })
 
-  if (!doctor) return Response.json({ error: "Médico não encontrado" }, { status: 404 })
+  if (!doctor) return Response.json({ error: "Medico nao encontrado" }, { status: 404 })
   if (!hasAiChat(doctor.plan)) {
-    return Response.json({ error: "Chat com IA não disponível neste plano." }, { status: 403 })
+    return Response.json({ error: "Chat com IA nao disponivel neste plano." }, { status: 403 })
   }
 
-  const systemInstruction = `Você é a secretária virtual do(a) Dr(a). ${doctor.user.name}${doctor.specialty ? `, especialista em ${doctor.specialty}` : ""}. Ajude pacientes a agendar consultas de forma amigável e profissional. Responda sempre em português brasileiro. Seja concisa.
+  const brazilToday = getBrazilToday()
+  const systemInstruction = `Voce e a secretaria virtual do(a) Dr(a). ${doctor.user.name}${doctor.specialty ? `, especialista em ${doctor.specialty}` : ""}. Ajude pacientes a agendar consultas de forma amigavel e profissional. Responda sempre em portugues brasileiro. Seja concisa.
 
-Sobre o consultório:
+Sobre o consultorio:
 ${doctor.addressCity ? `- Local: ${doctor.addressCity}${doctor.addressState ? `/${doctor.addressState}` : ""}` : ""}
 ${doctor.pricePrivate ? `- Consulta particular: R$ ${Number(doctor.pricePrivate).toFixed(2)}` : ""}
-- Duração: ${doctor.consultationDurationMinutes} minutos por consulta
+- Duracao: ${doctor.consultationDurationMinutes} minutos por consulta
+- Data de hoje no Brasil: ${brazilToday}
 
-Ao mostrar horários disponíveis, liste no máximo 5 opções de cada vez.
-Para agendar, o paciente precisa estar logado. Se não estiver (você receberá NOT_AUTHENTICATED), diga educadamente que ele precisa fazer login para confirmar o agendamento.`
+Ao mostrar horarios disponiveis, liste no maximo 5 opcoes de cada vez.
+Se o paciente perguntar sobre um dia especifico, use a ferramenta com o campo date no formato YYYY-MM-DD.
+Nao diga que voce nao sabe a data de hoje, porque a data atual ja foi informada acima.
+Para agendar, o paciente precisa estar logado. Se nao estiver (voce recebera NOT_AUTHENTICATED), diga educadamente que ele precisa fazer login para confirmar o agendamento.`
 
   const processToolCall = async (name: string, args: Record<string, unknown>): Promise<string> => {
     if (name === "check_available_slots") {
       const daysAhead = Math.min(Math.max(1, Number(args.days_ahead) || 14), 30)
+      const targetDate = typeof args.date === "string" && DATE_RE.test(args.date) ? args.date : undefined
       const slots = getAvailableSlots(
         doctor.availabilities,
         doctor.appointments,
         doctor.blockedSlots,
         doctor.consultationDurationMinutes,
-        daysAhead
+        daysAhead,
+        targetDate
       )
-      if (slots.length === 0) return "Não há horários disponíveis nos próximos dias."
-      return JSON.stringify(slots.slice(0, 20))
+
+      if (slots.length === 0) {
+        return targetDate
+          ? JSON.stringify({ date: targetDate, slots: [] })
+          : "Nao ha horarios disponiveis nos proximos dias."
+      }
+
+      return JSON.stringify({
+        date: targetDate ?? null,
+        slots: slots.slice(0, targetDate ? 50 : 20),
+      })
     }
 
     if (name === "book_appointment") {
@@ -225,7 +251,14 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
       })
 
       await prisma.appointment.create({
-        data: { doctorProfileId: doctor.id, patientProfileId: patientProfile.id, startAt, endAt, status: "PENDING", notes },
+        data: {
+          doctorProfileId: doctor.id,
+          patientProfileId: patientProfile.id,
+          startAt,
+          endAt,
+          status: "PENDING",
+          notes,
+        },
       })
 
       sendNewAppointmentToDoctor({
@@ -294,7 +327,7 @@ Para agendar, o paciente precisa estar logado. Se não estiver (você receberá 
       (status === 403 && message.includes("unregistered callers"))
     ) {
       return Response.json(
-        { message: "O chat com IA está temporariamente indisponível por configuração da chave do Gemini.", requiresAuth },
+        { message: "O chat com IA esta temporariamente indisponivel por configuracao da chave do Gemini.", requiresAuth },
         { status: 503 }
       )
     }

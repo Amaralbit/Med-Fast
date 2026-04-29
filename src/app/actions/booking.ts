@@ -6,24 +6,13 @@ import { prisma } from "@/server/db"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { PLAN_LIMITS } from "@/lib/plan"
+import { getAvailableSlotsForDate } from "@/lib/slots"
 import { sanitizeMultilineText } from "@/lib/security/sanitize"
 import { verifyActionToken } from "@/lib/security/form-protection"
 
 export type SlotTime = { startAt: string; endAt: string; label: string }
 
-const DAY_OF_WEEK = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
 const NOTES_MAX_LENGTH = 2000
-
-function parseTime(timeStr: string): number {
-  const [h, m] = timeStr.split(":").map(Number)
-  return h * 60 + m
-}
-
-function minutesToTime(minutes: number): string {
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
-}
 
 async function getClientIp() {
   const h = await headers()
@@ -35,67 +24,40 @@ export async function getAvailableSlots(doctorProfileId: string, dateStr: string
   const rl = checkRateLimit(`slots:${doctorProfileId}:${ip}`, 120, 60 * 1000)
   if (!rl.allowed) return []
 
-  const date = new Date(`${dateStr}T00:00:00-03:00`)
-  const dayOfWeek = DAY_OF_WEEK[date.getUTCDay()]
-
-  const [profile, availability] = await Promise.all([
+  const [profile, availabilities, blockedSlots, existingAppts] = await Promise.all([
     prisma.doctorProfile.findUnique({
       where: { id: doctorProfileId },
       select: { consultationDurationMinutes: true },
     }),
-    prisma.weeklyAvailability.findFirst({
-      where: { doctorProfileId, dayOfWeek: dayOfWeek as never },
+    prisma.weeklyAvailability.findMany({
+      where: { doctorProfileId },
     }),
-  ])
-
-  if (!profile || !availability) return []
-
-  const duration = profile.consultationDurationMinutes
-  const startMin = parseTime(availability.startTime)
-  const endMin = parseTime(availability.endTime)
-  const dayStart = new Date(`${dateStr}T00:00:00-03:00`)
-  const dayEnd = new Date(`${dateStr}T23:59:59-03:00`)
-
-  const [blockedSlots, existingAppts] = await Promise.all([
     prisma.blockedSlot.findMany({
-      where: { doctorProfileId, startAt: { lte: dayEnd }, endAt: { gte: dayStart } },
+      where: {
+        doctorProfileId,
+        startAt: { lte: new Date(`${dateStr}T23:59:59-03:00`) },
+        endAt: { gte: new Date(`${dateStr}T00:00:00-03:00`) },
+      },
     }),
     prisma.appointment.findMany({
       where: {
         doctorProfileId,
         status: { in: ["PENDING", "CONFIRMED"] },
-        startAt: { lte: dayEnd },
-        endAt: { gte: dayStart },
+        startAt: { lte: new Date(`${dateStr}T23:59:59-03:00`) },
+        endAt: { gte: new Date(`${dateStr}T00:00:00-03:00`) },
       },
     }),
   ])
 
-  const now = new Date()
-  const slots: SlotTime[] = []
-  let current = startMin
+  if (!profile || availabilities.length === 0) return []
 
-  while (current + duration <= endMin) {
-    const slotStart = new Date(`${dateStr}T${minutesToTime(current)}:00-03:00`)
-    const slotEnd = new Date(`${dateStr}T${minutesToTime(current + duration)}:00-03:00`)
-
-    if (slotStart > now) {
-      const hasConflict =
-        blockedSlots.some((b) => b.startAt < slotEnd && b.endAt > slotStart) ||
-        existingAppts.some((a) => a.startAt < slotEnd && a.endAt > slotStart)
-
-      if (!hasConflict) {
-        slots.push({
-          startAt: slotStart.toISOString(),
-          endAt: slotEnd.toISOString(),
-          label: minutesToTime(current),
-        })
-      }
-    }
-
-    current += duration
-  }
-
-  return slots
+  return getAvailableSlotsForDate(
+    availabilities,
+    existingAppts,
+    blockedSlots,
+    profile.consultationDurationMinutes,
+    dateStr
+  )
 }
 
 export async function bookAppointment(
