@@ -257,7 +257,14 @@ export default function LandingPage() {
       <footer className="border-t border-gray-100 dark:border-zinc-800 py-8 px-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400 dark:text-gray-600">
           <span className="font-bold text-blue-500 dark:text-cyan-400">MedFast</span>
-          <span>Secretária virtual com IA para consultórios médicos</span>
+          <div className="flex items-center gap-4">
+            <Link href="/privacidade" className="hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
+              Política de Privacidade
+            </Link>
+            <Link href="/termos" className="hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
+              Termos de Uso
+            </Link>
+          </div>
         </div>
       </footer>
 

@@ -80,6 +80,27 @@ export default function RegisterPage() {
           />
         </div>
 
+        <div className="flex items-start gap-2.5">
+          <input
+            id="terms"
+            name="terms"
+            type="checkbox"
+            required
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 dark:border-zinc-600 accent-blue-500 dark:accent-cyan-400 cursor-pointer"
+          />
+          <label htmlFor="terms" className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed cursor-pointer">
+            Li e concordo com a{" "}
+            <Link href="/privacidade" target="_blank" className="text-blue-500 dark:text-cyan-400 hover:underline">
+              Política de Privacidade
+            </Link>{" "}
+            e os{" "}
+            <Link href="/termos" target="_blank" className="text-blue-500 dark:text-cyan-400 hover:underline">
+              Termos de Uso
+            </Link>
+            , incluindo o tratamento dos meus dados pessoais conforme a LGPD.
+          </label>
+        </div>
+
         {state?.error && (
           <p className="text-sm text-red-500">{state.error}</p>
         )}

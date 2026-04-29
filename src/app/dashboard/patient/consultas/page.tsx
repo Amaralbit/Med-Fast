@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { cancelPatientAppointment } from "@/app/actions/patient"
 import { Clock, CalendarX, ExternalLink, X, FileText } from "lucide-react"
+import { DeleteAccountButton } from "@/components/delete-account-button"
 
 const DOC_LABEL: Record<string, string> = { PRESCRIPTION: "Receita", CERTIFICATE: "Atestado", OTHER: "Documento" }
 
@@ -52,11 +53,14 @@ export default async function ConsultasPage({ searchParams }: Props) {
 
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Minhas Consultas</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Acompanhe o status dos seus agendamentos
-        </p>
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Minhas Consultas</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Acompanhe o status dos seus agendamentos
+          </p>
+        </div>
+        <DeleteAccountButton />
       </div>
 
       {/* Tabs */}
@@ -227,6 +231,7 @@ export default async function ConsultasPage({ searchParams }: Props) {
           })}
         </div>
       )}
+
     </>
   )
 }
