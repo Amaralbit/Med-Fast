@@ -241,7 +241,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className="border-b border-gray-100 bg-white/80 py-5 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+      <div className="scroll-reveal border-b border-gray-100 bg-white/80 py-5 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 px-4 text-sm font-medium text-slate-500 dark:text-zinc-400">
           {[
             { icon: Users, text: "Médicos de todas as especialidades" },
@@ -258,13 +258,17 @@ export default function LandingPage() {
 
       <section className="px-4 py-24">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
+          <div className="scroll-reveal mb-16 text-center">
             <h2 className="mb-3 text-4xl font-black tracking-tight">Como funciona</h2>
             <p className="text-slate-500 dark:text-zinc-400">Configure uma vez. A IA cuida do resto.</p>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {steps.map((step, i) => (
-              <div key={step.number} className="group relative">
+              <div
+                key={step.number}
+                className="scroll-reveal group relative"
+                style={{ animationDelay: `${i * 90}ms` }}
+              >
                 {i < steps.length - 1 && (
                   <div className="absolute left-[calc(50%+2rem)] right-0 top-8 hidden h-px bg-gradient-to-r from-blue-200 to-transparent md:block dark:from-cyan-900" />
                 )}
@@ -284,15 +288,16 @@ export default function LandingPage() {
       <section className="relative bg-slate-50 px-4 py-24 dark:bg-zinc-900">
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent dark:from-zinc-950" />
         <div className="relative mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
+          <div className="scroll-reveal mb-16 text-center">
             <h2 className="mb-3 text-4xl font-black tracking-tight">Tudo que você precisa</h2>
             <p className="text-slate-500 dark:text-zinc-400">Um sistema completo para substituir o atendimento manual</p>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, description }) => (
+            {features.map(({ icon: Icon, title, description }, i) => (
               <div
                 key={title}
-                className="group relative overflow-hidden rounded-3xl border border-white bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-600/10 dark:border-white/10 dark:bg-zinc-800/50"
+                className="scroll-reveal group relative overflow-hidden rounded-3xl border border-white bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-600/10 dark:border-white/10 dark:bg-zinc-800/50"
+                style={{ animationDelay: `${(i % 3) * 80}ms` }}
               >
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 dark:bg-cyan-950">
@@ -308,14 +313,15 @@ export default function LandingPage() {
 
       <section className="px-4 py-24">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
+          <div className="scroll-reveal mb-16 text-center">
             <h2 className="mb-3 text-4xl font-black tracking-tight">O que os médicos dizem</h2>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-            {testimonials.map((t) => (
+            {testimonials.map((t, i) => (
               <div
                 key={t.name}
-                className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+                className="scroll-reveal rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+                style={{ animationDelay: `${i * 90}ms` }}
               >
                 <div className="mb-4 flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -335,7 +341,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-slate-950 px-4 py-24">
+      <section className="scroll-reveal relative overflow-hidden bg-slate-950 px-4 py-24">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_30%,rgba(37,99,235,0.45),transparent_28%),radial-gradient(circle_at_75%_65%,rgba(34,211,238,0.38),transparent_30%)]" />
         <div className="kinetic-grid absolute inset-0 opacity-30" />
         <div className="relative mx-auto max-w-3xl text-center text-white">
