@@ -3,6 +3,7 @@ import {
   Bot, Calendar, Clock, Shield, Star, ArrowRight,
   CheckCircle, Stethoscope, Users, Zap,
 } from "lucide-react"
+import { HeroDecorations } from "./hero-decorations"
 
 const features = [
   {
@@ -101,22 +102,35 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden py-24 px-4">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 pointer-events-none" />
+        <HeroDecorations />
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 text-xs font-medium mb-6">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 text-xs font-medium mb-6"
+            style={{ animation: "fade-up 0.6s ease 0.1s both" }}
+          >
             <Zap size={12} />
             Secretária Virtual com IA para Médicos
           </div>
-          <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+          <h1
+            className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6 tracking-tight"
+            style={{ animation: "fade-up 0.7s ease 0.25s both" }}
+          >
             Chega de{" "}
             <span className="text-blue-500 dark:text-cyan-400">WhatsApp</span>
             <br />
             para agendar consultas
           </h1>
-          <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p
+            className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+            style={{ animation: "fade-up 0.7s ease 0.45s both" }}
+          >
             O MedFast cria uma página pública para o seu consultório com uma IA que atende,
             verifica disponibilidade e agenda consultas automaticamente — 24 horas por dia.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-3"
+            style={{ animation: "fade-up 0.7s ease 0.6s both" }}
+          >
             <Link
               href="/register"
               className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-500 dark:bg-cyan-500 hover:bg-blue-600 dark:hover:bg-cyan-600 text-white font-semibold transition-colors"
@@ -131,7 +145,10 @@ export default function LandingPage() {
               Já tenho conta
             </Link>
           </div>
-          <p className="mt-4 text-xs text-gray-400 dark:text-gray-600">
+          <p
+            className="mt-4 text-xs text-gray-400 dark:text-gray-600"
+            style={{ animation: "fade-up 0.6s ease 0.75s both" }}
+          >
             Gratuito para começar · Sem cartão de crédito
           </p>
         </div>
