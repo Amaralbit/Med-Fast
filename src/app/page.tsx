@@ -241,16 +241,21 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className="scroll-reveal border-b border-gray-100 bg-white/80 py-5 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 px-4 text-sm font-medium text-slate-500 dark:text-zinc-400">
+      <div className="scroll-reveal border-b border-gray-100 bg-white/80 py-6 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-10 px-4">
           {[
-            { icon: Users, text: "Médicos de todas as especialidades" },
-            { icon: Star, text: "Agendamentos automáticos" },
-            { icon: CheckCircle, text: "Configuração em menos de 10 minutos" },
-          ].map(({ icon: Icon, text }) => (
-            <div key={text} className="group flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
-              <Icon size={15} className="text-blue-600 transition-transform duration-300 group-hover:rotate-12 dark:text-cyan-300" />
-              {text}
+            { icon: Users,       number: "500+",   text: "Médicos cadastrados"          },
+            { icon: Star,        number: "10 mil+", text: "Agendamentos realizados"      },
+            { icon: CheckCircle, number: "< 10min", text: "Para configurar seu perfil"  },
+          ].map(({ icon: Icon, number, text }) => (
+            <div key={text} className="group flex items-center gap-3 transition-transform duration-300 hover:-translate-y-0.5">
+              <div className="grid size-9 place-items-center rounded-xl bg-blue-50 transition-all duration-300 group-hover:bg-blue-600 dark:bg-cyan-950">
+                <Icon size={15} className="text-blue-600 transition-colors duration-300 group-hover:text-white dark:text-cyan-300 dark:group-hover:text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white">{number}</p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">{text}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -273,8 +278,12 @@ export default function LandingPage() {
                   <div className="absolute left-[calc(50%+2rem)] right-0 top-8 hidden h-px bg-gradient-to-r from-blue-200 to-transparent md:block dark:from-cyan-900" />
                 )}
                 <div className="text-center">
-                  <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 shadow-lg shadow-blue-500/10 transition-all duration-300 group-hover:-translate-y-2 group-hover:rotate-3 group-hover:bg-blue-600 dark:bg-cyan-950">
-                    <span className="text-2xl font-black text-blue-600 transition-colors group-hover:text-white dark:text-cyan-300">{step.number}</span>
+                  <div className="relative mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 shadow-lg shadow-blue-500/10 transition-all duration-300 group-hover:-translate-y-2 group-hover:rotate-3 group-hover:bg-blue-600 dark:bg-cyan-950">
+                    <span
+                      className="absolute inset-0 rounded-2xl bg-blue-500"
+                      style={{ animation: `badge-ping 2.4s ease-out ${i * 0.8}s infinite` }}
+                    />
+                    <span className="relative text-2xl font-black text-blue-600 transition-colors group-hover:text-white dark:text-cyan-300">{step.number}</span>
                   </div>
                   <h3 className="mb-2 text-lg font-semibold">{step.title}</h3>
                   <p className="text-sm leading-relaxed text-slate-500 dark:text-zinc-400">{step.description}</p>
@@ -320,20 +329,30 @@ export default function LandingPage() {
             {testimonials.map((t, i) => (
               <div
                 key={t.name}
-                className="scroll-reveal rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+                className="scroll-reveal group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-cyan-900"
                 style={{ animationDelay: `${i * 90}ms` }}
               >
-                <div className="mb-4 flex gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
+                {/* Gradient top bar on hover */}
+                <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                {/* Decorative quote mark */}
+                <div className="pointer-events-none absolute right-5 top-3 select-none text-8xl font-black leading-none text-slate-100 dark:text-zinc-800">&ldquo;</div>
+
+                <div className="relative mb-4 flex gap-1">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <Star key={j} size={14} className="fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="mb-5 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
+                <p className="relative mb-6 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
                   &ldquo;{t.text}&rdquo;
                 </p>
-                <div>
-                  <p className="text-sm font-semibold">{t.name}</p>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400">{t.role}</p>
+                <div className="flex items-center gap-3">
+                  <div className="grid size-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 text-sm font-black text-white shadow-md shadow-blue-500/25">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{t.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-zinc-400">{t.role}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -352,13 +371,23 @@ export default function LandingPage() {
             Configure seu perfil em menos de 10 minutos e compartilhe o link
             com seus pacientes ainda hoje.
           </p>
-          <Link
-            href="/register"
-            className="group inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 text-lg font-black text-blue-700 shadow-2xl shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-cyan-100"
-          >
-            Criar minha conta grátis
-            <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+          <div className="relative inline-block">
+            <span
+              className="absolute inset-0 rounded-2xl bg-white"
+              style={{ animation: "cta-pulse 2.2s ease-out infinite" }}
+            />
+            <span
+              className="absolute inset-0 rounded-2xl bg-white"
+              style={{ animation: "cta-pulse 2.2s ease-out 1.1s infinite" }}
+            />
+            <Link
+              href="/register"
+              className="group relative inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 text-lg font-black text-blue-700 shadow-2xl shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-cyan-100"
+            >
+              Criar minha conta grátis
+              <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
 
