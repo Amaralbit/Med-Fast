@@ -1,7 +1,19 @@
 import Link from "next/link"
 import {
-  Bot, Calendar, Clock, Shield, Star, ArrowRight,
-  CheckCircle, Stethoscope, Users, Zap,
+  Activity,
+  ArrowRight,
+  Bot,
+  Calendar,
+  CheckCircle,
+  Clock,
+  MessageCircle,
+  MousePointer2,
+  Shield,
+  Sparkles,
+  Star,
+  Stethoscope,
+  Users,
+  Zap,
 } from "lucide-react"
 import { HeroDecorations } from "./hero-decorations"
 
@@ -74,24 +86,33 @@ const testimonials = [
   },
 ]
 
+const liveCards = [
+  { icon: MessageCircle, label: "Mensagem recebida", value: "Consulta para amanhã?", color: "text-emerald-500" },
+  { icon: Activity, label: "IA conferindo agenda", value: "3 horários livres", color: "text-blue-500" },
+  { icon: CheckCircle, label: "Agendamento confirmado", value: "09:30 - Dra. Camila", color: "text-cyan-500" },
+]
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-white">
-
-      {/* Nav */}
-      <header className="border-b border-gray-100 dark:border-zinc-800 sticky top-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm z-10">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <span className="text-xl font-bold text-blue-500 dark:text-cyan-400">MedFast</span>
+    <div className="min-h-screen overflow-hidden bg-white text-slate-950 dark:bg-zinc-950 dark:text-white">
+      <header className="sticky top-0 z-30 border-b border-white/60 bg-white/70 shadow-sm shadow-blue-950/5 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/70">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+          <Link href="/" className="group flex items-center gap-2">
+            <span className="grid size-9 place-items-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/25 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105">
+              <Zap size={17} />
+            </span>
+            <span className="text-xl font-black tracking-tight text-blue-600 dark:text-cyan-300">MedFast</span>
+          </Link>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white"
             >
               Entrar
             </Link>
             <Link
               href="/register"
-              className="px-4 py-2 rounded-lg bg-blue-500 dark:bg-cyan-500 hover:bg-blue-600 dark:hover:bg-cyan-600 text-white text-sm font-medium transition-colors"
+              className="rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-600 hover:shadow-blue-500/35 dark:bg-white dark:text-slate-950 dark:hover:bg-cyan-200"
             >
               Criar conta grátis
             </Link>
@@ -99,96 +120,160 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden py-24 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-900 pointer-events-none" />
+      <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:pt-24">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(37,99,235,0.20),transparent_26%),radial-gradient(circle_at_84%_18%,rgba(34,211,238,0.22),transparent_24%),linear-gradient(135deg,#eff6ff_0%,#ffffff_42%,#ecfeff_100%)] dark:bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,0.16),transparent_26%),radial-gradient(circle_at_84%_18%,rgba(37,99,235,0.18),transparent_24%),linear-gradient(135deg,#09090b_0%,#0f172a_52%,#082f49_100%)]" />
+        <div className="kinetic-grid absolute inset-0 opacity-70" />
+        <div className="absolute -left-28 top-28 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
+        <div className="absolute -right-24 bottom-8 h-80 w-80 rounded-full bg-cyan-300/25 blur-3xl" />
         <HeroDecorations />
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-cyan-950 text-blue-600 dark:text-cyan-400 text-xs font-medium mb-6"
-            style={{ animation: "fade-up 0.6s ease 0.1s both" }}
-          >
-            <Zap size={12} />
-            Secretária Virtual com IA para Médicos
-          </div>
-          <h1
-            className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6 tracking-tight"
-            style={{ animation: "fade-up 0.7s ease 0.25s both" }}
-          >
-            Chega de{" "}
-            <span className="text-blue-500 dark:text-cyan-400">WhatsApp</span>
-            <br />
-            para agendar consultas
-          </h1>
-          <p
-            className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
-            style={{ animation: "fade-up 0.7s ease 0.45s both" }}
-          >
-            O MedFast cria uma página pública para o seu consultório com uma IA que atende,
-            verifica disponibilidade e agenda consultas automaticamente — 24 horas por dia.
-          </p>
-          <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-3"
-            style={{ animation: "fade-up 0.7s ease 0.6s both" }}
-          >
-            <Link
-              href="/register"
-              className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-500 dark:bg-cyan-500 hover:bg-blue-600 dark:hover:bg-cyan-600 text-white font-semibold transition-colors"
+
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_420px]">
+          <div className="text-center lg:text-left">
+            <div
+              className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/80 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.22em] text-blue-700 shadow-sm backdrop-blur dark:border-cyan-300/20 dark:bg-white/10 dark:text-cyan-200"
+              style={{ animation: "fade-up 0.6s ease 0.1s both" }}
             >
-              Quero minha secretária virtual
-              <ArrowRight size={18} />
-            </Link>
-            <Link
-              href="/login"
-              className="px-6 py-3.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-zinc-500 font-medium transition-colors text-sm"
+              <Sparkles size={13} />
+              Secretária virtual com IA
+            </div>
+            <h1
+              className="mt-6 text-5xl font-black leading-[0.95] tracking-[-0.06em] text-slate-950 sm:text-7xl lg:text-8xl dark:text-white"
+              style={{ animation: "fade-up 0.7s ease 0.25s both" }}
             >
-              Já tenho conta
-            </Link>
+              Consultas no
+              <span className="shimmer-text block">piloto automático</span>
+            </h1>
+            <p
+              className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl lg:mx-0 dark:text-zinc-300"
+              style={{ animation: "fade-up 0.7s ease 0.45s both" }}
+            >
+              O MedFast troca o vai-e-volta do WhatsApp por uma página pública com IA:
+              ela atende, confere disponibilidade e agenda consultas enquanto você cuida dos pacientes.
+            </p>
+            <div
+              className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start"
+              style={{ animation: "fade-up 0.7s ease 0.6s both" }}
+            >
+              <Link
+                href="/register"
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-blue-600 px-7 py-4 font-black text-white shadow-2xl shadow-blue-600/30 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-slate-950 dark:bg-cyan-400 dark:text-slate-950 dark:shadow-cyan-400/20 dark:hover:bg-white"
+              >
+                <span className="button-sheen" />
+                Quero minha secretária virtual
+                <ArrowRight size={19} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/70 px-6 py-4 text-sm font-bold text-slate-700 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:text-blue-700 dark:border-white/10 dark:bg-white/10 dark:text-zinc-200 dark:hover:border-cyan-300/40 dark:hover:text-cyan-200"
+              >
+                <MousePointer2 size={16} />
+                Já tenho conta
+              </Link>
+            </div>
+            <p
+              className="mt-4 text-xs font-medium text-slate-400 dark:text-zinc-500"
+              style={{ animation: "fade-up 0.6s ease 0.75s both" }}
+            >
+              Gratuito para começar · Sem cartão de crédito
+            </p>
           </div>
-          <p
-            className="mt-4 text-xs text-gray-400 dark:text-gray-600"
-            style={{ animation: "fade-up 0.6s ease 0.75s both" }}
+
+          <div
+            className="hero-console relative mx-auto w-full max-w-[420px] rounded-[2rem] border border-white/70 bg-white/70 p-4 shadow-2xl shadow-blue-950/15 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-900/70"
+            style={{ animation: "fade-up 0.8s ease 0.35s both" }}
           >
-            Gratuito para começar · Sem cartão de crédito
-          </p>
+            <div className="absolute -right-6 -top-6 rotate-3 rounded-2xl bg-slate-950 px-4 py-3 text-white shadow-xl shadow-blue-950/20 dark:bg-white dark:text-slate-950">
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-cyan-300 dark:text-blue-600">ao vivo</p>
+              <p className="text-sm font-black">24h online</p>
+            </div>
+            <div className="rounded-[1.5rem] bg-slate-950 p-5 text-white dark:bg-black">
+              <div className="mb-5 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-cyan-300">MedFast AI</p>
+                  <p className="text-2xl font-black tracking-tight">Agenda inteligente</p>
+                </div>
+                <div className="grid size-12 place-items-center rounded-2xl bg-blue-500 text-white shadow-lg shadow-blue-500/40">
+                  <Bot size={24} />
+                </div>
+              </div>
+              <div className="space-y-3">
+                {liveCards.map(({ icon: Icon, label, value, color }, i) => (
+                  <div
+                    key={label}
+                    className="live-card flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.07] p-3 backdrop-blur"
+                    style={{ animationDelay: `${0.9 + i * 0.16}s` }}
+                  >
+                    <div className="grid size-10 place-items-center rounded-xl bg-white text-slate-950">
+                      <Icon size={19} className={color} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-400">{label}</p>
+                      <p className="font-bold">{value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-300 p-4 text-slate-950">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.2em]">Próxima consulta</p>
+                    <p className="text-3xl font-black">09:30</p>
+                  </div>
+                  <p className="rounded-full bg-white/80 px-3 py-1 text-xs font-black">Confirmada</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Social proof strip */}
-      <div className="border-y border-gray-100 dark:border-zinc-800 py-5 bg-gray-50 dark:bg-zinc-900">
-        <div className="max-w-4xl mx-auto px-4 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+      <div className="relative overflow-hidden border-y border-blue-100 bg-slate-950 py-3 text-white dark:border-white/10">
+        <div className="ticker-track flex w-max gap-8 text-sm font-black uppercase tracking-[0.24em] text-cyan-200">
+          {Array.from({ length: 2 }).map((_, loop) => (
+            <div key={loop} className="flex gap-8">
+              <span>IA atendendo</span>
+              <span>Agenda sem conflito</span>
+              <span>Perfil público</span>
+              <span>Confirmação automática</span>
+              <span>Menos WhatsApp</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b border-gray-100 bg-white/80 py-5 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/80">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 px-4 text-sm font-medium text-slate-500 dark:text-zinc-400">
           {[
             { icon: Users, text: "Médicos de todas as especialidades" },
             { icon: Star, text: "Agendamentos automáticos" },
             { icon: CheckCircle, text: "Configuração em menos de 10 minutos" },
           ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-2">
-              <Icon size={15} className="text-blue-500 dark:text-cyan-400" />
+            <div key={text} className="group flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+              <Icon size={15} className="text-blue-600 transition-transform duration-300 group-hover:rotate-12 dark:text-cyan-300" />
               {text}
             </div>
           ))}
         </div>
       </div>
 
-      {/* How it works */}
-      <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-3">Como funciona</h2>
-            <p className="text-gray-500 dark:text-gray-400">Configure uma vez. A IA cuida do resto.</p>
+      <section className="px-4 py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="mb-3 text-4xl font-black tracking-tight">Como funciona</h2>
+            <p className="text-slate-500 dark:text-zinc-400">Configure uma vez. A IA cuida do resto.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {steps.map((step, i) => (
-              <div key={step.number} className="relative">
+              <div key={step.number} className="group relative">
                 {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[calc(50%+2rem)] right-0 h-px bg-gradient-to-r from-blue-200 dark:from-cyan-900 to-transparent" />
+                  <div className="absolute left-[calc(50%+2rem)] right-0 top-8 hidden h-px bg-gradient-to-r from-blue-200 to-transparent md:block dark:from-cyan-900" />
                 )}
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 dark:bg-cyan-950 mb-4">
-                    <span className="text-2xl font-extrabold text-blue-500 dark:text-cyan-400">{step.number}</span>
+                  <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 shadow-lg shadow-blue-500/10 transition-all duration-300 group-hover:-translate-y-2 group-hover:rotate-3 group-hover:bg-blue-600 dark:bg-cyan-950">
+                    <span className="text-2xl font-black text-blue-600 transition-colors group-hover:text-white dark:text-cyan-300">{step.number}</span>
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{step.description}</p>
+                  <h3 className="mb-2 text-lg font-semibold">{step.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-500 dark:text-zinc-400">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -196,53 +281,53 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features grid */}
-      <section className="py-24 px-4 bg-gray-50 dark:bg-zinc-900">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-3">Tudo que você precisa</h2>
-            <p className="text-gray-500 dark:text-gray-400">Um sistema completo para substituir o atendimento manual</p>
+      <section className="relative bg-slate-50 px-4 py-24 dark:bg-zinc-900">
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent dark:from-zinc-950" />
+        <div className="relative mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="mb-3 text-4xl font-black tracking-tight">Tudo que você precisa</h2>
+            <p className="text-slate-500 dark:text-zinc-400">Um sistema completo para substituir o atendimento manual</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {features.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
-                className="bg-white dark:bg-zinc-800/50 rounded-2xl border border-gray-200 dark:border-zinc-700 p-6 hover:shadow-md transition-shadow"
+                className="group relative overflow-hidden rounded-3xl border border-white bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-600/10 dark:border-white/10 dark:bg-zinc-800/50"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-cyan-950 flex items-center justify-center mb-4">
-                  <Icon size={20} className="text-blue-500 dark:text-cyan-400" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 to-cyan-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 dark:bg-cyan-950">
+                  <Icon size={20} className="text-blue-600 dark:text-cyan-300" />
                 </div>
-                <h3 className="font-semibold mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{description}</p>
+                <h3 className="mb-2 font-semibold">{title}</h3>
+                <p className="text-sm leading-relaxed text-slate-500 dark:text-zinc-400">{description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-3">O que os médicos dizem</h2>
+      <section className="px-4 py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="mb-3 text-4xl font-black tracking-tight">O que os médicos dizem</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {testimonials.map((t) => (
               <div
                 key={t.name}
-                className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6"
+                className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
               >
-                <div className="flex gap-1 mb-4">
+                <div className="mb-4 flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-5">
+                <p className="mb-5 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
                   &ldquo;{t.text}&rdquo;
                 </p>
                 <div>
-                  <p className="font-semibold text-sm">{t.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{t.role}</p>
+                  <p className="text-sm font-semibold">{t.name}</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">{t.role}</p>
                 </div>
               </div>
             ))}
@@ -250,41 +335,40 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-24 px-4 bg-gradient-to-br from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600">
-        <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-4xl font-extrabold mb-4">
+      <section className="relative overflow-hidden bg-slate-950 px-4 py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_30%,rgba(37,99,235,0.45),transparent_28%),radial-gradient(circle_at_75%_65%,rgba(34,211,238,0.38),transparent_30%)]" />
+        <div className="kinetic-grid absolute inset-0 opacity-30" />
+        <div className="relative mx-auto max-w-3xl text-center text-white">
+          <h2 className="mb-4 text-4xl font-black tracking-tight sm:text-5xl">
             Comece hoje mesmo
           </h2>
-          <p className="text-blue-100 text-lg mb-8 leading-relaxed">
+          <p className="mb-8 text-lg leading-relaxed text-blue-100">
             Configure seu perfil em menos de 10 minutos e compartilhe o link
             com seus pacientes ainda hoje.
           </p>
           <Link
             href="/register"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-blue-600 font-bold text-lg hover:bg-blue-50 transition-colors shadow-lg"
+            className="group inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-4 text-lg font-black text-blue-700 shadow-2xl shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:bg-cyan-100"
           >
             Criar minha conta grátis
-            <ArrowRight size={20} />
+            <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-100 dark:border-zinc-800 py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400 dark:text-gray-600">
-          <span className="font-bold text-blue-500 dark:text-cyan-400">MedFast</span>
+      <footer className="border-t border-gray-100 px-4 py-8 dark:border-zinc-800">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-slate-400 sm:flex-row dark:text-zinc-600">
+          <span className="font-bold text-blue-600 dark:text-cyan-300">MedFast</span>
           <div className="flex items-center gap-4">
-            <Link href="/privacidade" className="hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
+            <Link href="/privacidade" className="transition-colors hover:text-slate-600 dark:hover:text-zinc-400">
               Política de Privacidade
             </Link>
-            <Link href="/termos" className="hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
+            <Link href="/termos" className="transition-colors hover:text-slate-600 dark:hover:text-zinc-400">
               Termos de Uso
             </Link>
           </div>
         </div>
       </footer>
-
     </div>
   )
 }
