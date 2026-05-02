@@ -1,10 +1,12 @@
-import { Activity, Stethoscope } from "lucide-react"
+import { Activity, Bot, CalendarCheck, Stethoscope } from "lucide-react"
 
 const ITEMS = [
   { icon: Stethoscope, x: "1%",  y: "8%",  size: 64, rot: -20, opacity: 0.07, dur: "7s",   delay: "0s"   },
-  { icon: Stethoscope, x: "93%", y: "12%", size: 48, rot:  15, opacity: 0.06, dur: "8.5s", delay: "0.8s" },
+  { icon: CalendarCheck, x: "93%", y: "12%", size: 48, rot:  15, opacity: 0.06, dur: "8.5s", delay: "0.8s" },
   { icon: Activity,    x: "96%", y: "55%", size: 34, rot:  -8, opacity: 0.05, dur: "9s",   delay: "2.2s" },
   { icon: Stethoscope, x: "0%",  y: "68%", size: 42, rot:  10, opacity: 0.05, dur: "7.8s", delay: "1.6s" },
+  { icon: Bot,         x: "88%", y: "82%", size: 40, rot: -14, opacity: 0.05, dur: "8.8s", delay: "2.8s" },
+  { icon: CalendarCheck, x: "24%", y: "86%", size: 32, rot: -10, opacity: 0.05, dur: "7.4s", delay: "0.5s" },
 ]
 
 export function DashboardDecorations() {

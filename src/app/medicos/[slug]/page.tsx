@@ -7,6 +7,7 @@ import { AiChatWidget } from "./ai-chat-widget"
 import { BookingWidget } from "./booking-widget"
 import { hasAiChat } from "@/lib/plan"
 import { createActionToken } from "@/lib/security/form-protection"
+import { MedicalDecorations } from "@/app/medical-decorations"
 
 const DAY_LABELS: Record<string, string> = {
   SUNDAY: "Domingo",
@@ -56,10 +57,12 @@ export default async function DoctorPublicPage({ params }: Props) {
   ])
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950" style={{ "--color-primary": primary, "--color-accent": accent } as React.CSSProperties}>
+    <div className="relative min-h-screen overflow-hidden bg-gray-50 dark:bg-zinc-950" style={{ "--color-primary": primary, "--color-accent": accent } as React.CSSProperties}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_16%,rgba(37,99,235,0.10),transparent_24%),radial-gradient(circle_at_88%_28%,rgba(34,211,238,0.10),transparent_26%)]" />
+      <MedicalDecorations variant="profile" />
 
       {/* Hero */}
-      <div className="w-full py-16 px-4" style={{ background: `linear-gradient(135deg, ${primary}22 0%, ${accent}22 100%)` }}>
+      <div className="relative z-10 w-full py-16 px-4" style={{ background: `linear-gradient(135deg, ${primary}22 0%, ${accent}22 100%)` }}>
         <div className="max-w-3xl mx-auto flex items-center gap-6">
           {doctor.profilePhotoUrl ? (
             <img
@@ -91,7 +94,7 @@ export default async function DoctorPublicPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 py-10 space-y-8">
 
         {/* Bio */}
         {doctor.bio && (

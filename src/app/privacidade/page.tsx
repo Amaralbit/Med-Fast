@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Shield } from "lucide-react"
+import { MedicalDecorations } from "../medical-decorations"
 
 export const metadata = {
   title: "Política de Privacidade — MedFast",
@@ -8,7 +9,10 @@ export const metadata = {
 
 export default function PrivacidadePage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-white">
+    <div className="relative min-h-screen overflow-hidden bg-white text-gray-900 dark:bg-zinc-950 dark:text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_14%,rgba(37,99,235,0.12),transparent_24%),radial-gradient(circle_at_88%_36%,rgba(34,211,238,0.12),transparent_24%)]" />
+      <MedicalDecorations variant="legal" />
+
       {/* Nav */}
       <header className="border-b border-gray-100 dark:border-zinc-800 sticky top-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm z-10">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -24,7 +28,7 @@ export default function PrivacidadePage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-16">
+      <main className="relative z-10 max-w-3xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-cyan-950 flex items-center justify-center">
@@ -197,7 +201,7 @@ export default function PrivacidadePage() {
         </div>
       </main>
 
-      <footer className="border-t border-gray-100 dark:border-zinc-800 py-8 px-4 mt-16">
+      <footer className="relative z-10 border-t border-gray-100 dark:border-zinc-800 py-8 px-4 mt-16">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400 dark:text-gray-600">
           <Link href="/" className="font-bold text-blue-500 dark:text-cyan-400">MedFast</Link>
           <div className="flex items-center gap-4">
