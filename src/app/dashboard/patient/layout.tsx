@@ -5,6 +5,7 @@ import { Stethoscope, ClipboardList, LogOut } from "lucide-react"
 import { createActionToken } from "@/lib/security/form-protection"
 import { ActionTokenInput } from "@/components/action-token-input"
 import { signOutAction } from "@/app/actions/auth"
+import { DashboardDecorations } from "../dashboard-decorations"
 
 const navItems = [
   { href: "/dashboard/patient", label: "Médicos", icon: Stethoscope },
@@ -17,7 +18,8 @@ export default async function PatientLayout({ children }: { children: React.Reac
   const signOutActionToken = await createActionToken("auth:signout", session.user.id)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 relative">
+      <DashboardDecorations />
       {/* Top nav */}
       <header className="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
